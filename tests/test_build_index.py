@@ -1,3 +1,4 @@
+import pathlib
 """update_checkout in scripts/build_index.sh: fetch failures are loud, never silent."""
 import os
 import shutil
@@ -25,7 +26,7 @@ class UpdateCheckoutTest(unittest.TestCase):
         self.remote = os.path.join(self.tmp, "remote")
         os.makedirs(self.remote)
         sh("git", "init", "-q", "-b", "main", cwd=self.remote)
-        open(os.path.join(self.remote, "a.txt"), "w").write("v1")
+        pathlib.Path(os.path.join(self.remote, "a.txt")).write_text("v1")
         sh("git", "add", ".", cwd=self.remote)
         sh("git", "commit", "-q", "-m", "v1", cwd=self.remote)
         self.clone = os.path.join(self.tmp, "clone")
@@ -35,18 +36,18 @@ class UpdateCheckoutTest(unittest.TestCase):
         shutil.rmtree(self.tmp)
 
     def test_fetches_new_commit(self):
-        open(os.path.join(self.remote, "a.txt"), "w").write("v2")
+        pathlib.Path(os.path.join(self.remote, "a.txt")).write_text("v2")
         sh("git", "commit", "-qam", "v2", cwd=self.remote)
         r = update(self.clone, "a.txt")
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(open(os.path.join(self.clone, "a.txt")).read(), "v2")
+        self.assertEqual(pathlib.Path(os.path.join(self.clone, "a.txt")).read_text(), "v2")
 
     def test_fetch_failure_warns_and_keeps_checkout(self):
         shutil.rmtree(self.remote)
         r = update(self.clone, "a.txt")
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn("WARNING: fetch failed", r.stderr)
-        self.assertEqual(open(os.path.join(self.clone, "a.txt")).read(), "v1")
+        self.assertEqual(pathlib.Path(os.path.join(self.clone, "a.txt")).read_text(), "v1")
 
     def test_missing_content_fails(self):
         shutil.rmtree(self.remote)
