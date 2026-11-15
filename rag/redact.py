@@ -7,7 +7,7 @@ import re
 
 R = "[REDACTED]"
 
-_SENSITIVE_KEY = (r"(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|"
+_SENSITIVE_KEY = (r"(?:password|passwd|passphrase|(?<![a-z])pass|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|"
                   r"private[_-]?key|client[_-]?secret|auth|credential|cred|salt|session|cookie|signature|sig|dsn|"
                   r"database_url|db_url|webhook)")
 
@@ -108,7 +108,8 @@ _DENY = re.compile(r"(?i)(\.env(\.|$)|/\.env|\.pem$|\.key$|\.crt$|\.p12$|\.pfx$|
                    r"htpasswd|/letsencrypt/|/ssl/private|secret|credential|password|token|shadow|gbk-composer\.env|sudoers|"
                    r"ssh_host_|authorized_keys|known_hosts|\.netrc|/etc/ssl/|/etc/pki/|keyring|\.gnupg|opasswd|"
                    r"/environ$|/proc/(?:self|thread-self|\d+)(?:/task/\d+)?/(?:mem|environ|cmdline|auxv|pagemap|stack|syscall)$|"
-                   r"/proc/(?:self|thread-self|\d+)/(?:fd|fdinfo|map_files)/)")
+                   r"/proc/(?:self|thread-self|\d+)/(?:fd|fdinfo|map_files)/|"
+                   r"^/proc/kcore$|/maps$|^/etc/ssh/|^/etc/linux-rag/)")
 
 
 def path_allowed(path):

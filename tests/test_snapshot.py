@@ -59,7 +59,8 @@ class CollectTest(unittest.TestCase):
         for rel, text in files.items():
             p = os.path.join(self.root, rel)
             os.makedirs(os.path.dirname(p), exist_ok=True)
-            open(p, "w").write(text)
+            with open(p, "w") as f:
+                f.write(text)
         r = self.root
         self.specs = [
             F(f"{r}/etc/passwd", ["man5/passwd.5"], "passwd"),
@@ -103,6 +104,29 @@ class CollectTest(unittest.TestCase):
         from rag.redact import path_allowed
         for s in snapshot.SPECS:
             self.assertTrue(path_allowed(s.get("glob", s["path"])), s["path"])
+
+    def test_dropped_and_admin_only_specs(self):
+        paths = {s["path"] for s in snapshot.SPECS}
+        self.assertNotIn("/proc/self/maps", paths)
+        self.assertNotIn("/etc/ssh/sshd_config", paths)
+        self.assertFalse([p for p in paths if p.startswith("/etc/ssh/") or p.endswith("/maps")])
+        admin_only = {s["path"] for s in snapshot.SPECS if not s.get("public", True)}
+        self.assertEqual(admin_only, {"/proc/mounts", "/proc/self/mountinfo", "/proc/cmdline"})
+        scripts = []
+        snapshot.collect(lambda cmd: scripts.append(cmd) or "", public=True)
+        for p in admin_only:
+            self.assertNotIn(p, scripts[0])
+        scripts.clear()
+        snapshot.collect(lambda cmd: scripts.append(cmd) or "", public=False)
+        for p in admin_only:
+            self.assertIn(p, scripts[0])
+
+    def test_public_cgroup_path_removed(self):
+        if not os.path.exists("/proc/self/cgroup"):
+            self.skipTest("no /proc")
+        pub = collect(Runner(None), public=True, specs=[F("/proc/self/cgroup", [])])
+        for line in pub[0]["text"].splitlines():
+            self.assertRegex(line, r"^\d+:[^:]*:/\[cgroup path removed\]$")
 
     def test_prod_collector_includes_snapshot(self):
         seen = {}

@@ -18,8 +18,9 @@ from rag.redact import path_allowed, redact
 PROC = "Documentation/filesystems/proc.rst"
 
 
-def F(path, docs, xf=None, lines=None):
-    return {"kind": "file", "path": path, "docs": docs, "xf": xf, "lines": lines}
+def F(path, docs, xf=None, lines=None, public=True):
+    """public=False: admin (prod) snapshot only; these files describe the host's own setup."""
+    return {"kind": "file", "path": path, "docs": docs, "xf": xf, "lines": lines, "public": public}
 
 
 def T(name, glob, docs, prefix):
@@ -35,9 +36,9 @@ SPECS = [
     F("/proc/loadavg", ["man5/proc_loadavg.5"]),
     F("/proc/uptime", ["man5/proc_uptime.5"]),
     F("/proc/version", ["man5/proc_version.5"]),
-    F("/proc/cmdline", ["man5/proc_cmdline.5", "Documentation/admin-guide/kernel-parameters.rst"]),
+    F("/proc/cmdline", ["man5/proc_cmdline.5", "Documentation/admin-guide/kernel-parameters.rst"], public=False),
     F("/proc/filesystems", ["man5/proc_filesystems.5", "man5/filesystems.5"]),
-    F("/proc/mounts", ["man5/proc_mounts.5", "man5/proc_pid_mounts.5"]),
+    F("/proc/mounts", ["man5/proc_mounts.5", "man5/proc_pid_mounts.5"], public=False),
     F("/proc/swaps", ["man5/proc_swaps.5"]),
     F("/proc/partitions", ["man5/proc_partitions.5"]),
     F("/proc/diskstats", ["man5/proc_diskstats.5", "Documentation/admin-guide/iostats.rst"]),
@@ -57,8 +58,7 @@ SPECS = [
     T("/proc/sys/fs", "/proc/sys/fs/*", ["man5/proc_sys_fs.5", "Documentation/admin-guide/sysctl/fs.rst"], "fs."),
     F("/proc/self/status", ["man5/proc_pid_status.5"]),
     F("/proc/self/limits", ["man5/proc_pid_limits.5", "man2/getrlimit.2"]),
-    F("/proc/self/maps", ["man5/proc_pid_maps.5"], lines=40),
-    F("/proc/self/mountinfo", ["man5/proc_pid_mountinfo.5"], lines=40),
+    F("/proc/self/mountinfo", ["man5/proc_pid_mountinfo.5"], lines=40, public=False),
     F("/proc/self/cgroup", ["man5/proc_pid_cgroup.5", "man7/cgroups.7"]),
     F("/proc/net/dev", ["man5/proc_net.5"]),
     F("/proc/net/tcp", ["man5/proc_net.5", "Documentation/networking/proc_net_tcp.rst"], "net_tcp"),
@@ -93,7 +93,6 @@ SPECS = [
     F("/etc/ld.so.conf", ["man8/ld.so.8", "man8/ldconfig.8"]),
     F("/etc/ld.so.conf.d/*", ["man8/ld.so.8", "man8/ldconfig.8"]),
     F("/etc/resolv.conf", ["man5/resolv.conf.5"]),
-    F("/etc/ssh/sshd_config", []),
 ]
 
 PUBLIC_DROP = re.compile(r"^kernel\.(hostname|domainname)\b|^kernel\.random\.", re.M)
@@ -174,6 +173,8 @@ def _parse(out):
 
 def collect(run, public=True, specs=SPECS):
     """run(cmd) -> stdout. Returns [{path, title, docs, text}] already transformed and redacted."""
+    if public:
+        specs = [s for s in specs if s.get("public", True)]
     listed = {}
     for line in run("bash -c " + shlex.quote(_list_script(specs))).splitlines():
         i, _, p = line.partition(" ")
@@ -224,6 +225,10 @@ def collect(run, public=True, specs=SPECS):
                 n = len(text.splitlines())
                 text = "\n".join(text.splitlines()[:s["lines"]]) + (f"\n... ({n - s['lines']} more lines)" if n > s["lines"] else "")
             docs_out.append({"path": p, "docs": s["docs"], "text": text})
+    if public:  # the sampled process's cgroup path names the host's own service layout
+        for d in docs_out:
+            if d["path"] == "/proc/self/cgroup":
+                d["text"] = re.sub(r"^(\d+:[^:]*:).*$", r"\1/[cgroup path removed]", d["text"], flags=re.M)
     host = "".join(contents.get("/proc/sys/kernel/hostname", "").split())
     for d in docs_out:
         if public and len(host) > 2:
