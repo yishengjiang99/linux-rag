@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux RAG — ask the kernel, man pages and source</title>
+<meta name="description" content="Ask questions about Linux syscalls, kernel source, kernel docs and man pages. Answers cite their sources.">
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 16px; color: #111; background: #fafafa; }
+  h1 { font-size: 22px; margin: 8px 0 2px; }
+  .sub { color: #555; margin: 0 0 14px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 84px; font: 14px ui-monospace, monospace; padding: 8px; }
+  button { font: inherit; padding: 6px 12px; cursor: pointer; }
+  .ex { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .ex button { font-size: 13px; background: #fff; border: 1px solid #ccc; border-radius: 14px; padding: 3px 10px; }
+  #answer { white-space: pre-wrap; background: #fff; border: 1px solid #ddd; padding: 12px; margin-top: 12px; min-height: 2em; }
+  #sources { font-size: 13px; padding-left: 20px; }
+  #sources li { word-break: break-all; }
+  .tag { font-size: 11px; color: #fff; background: #777; border-radius: 3px; padding: 0 4px; margin-right: 4px; }
+  .tag.prod { background: #b00; } .tag.upload { background: #06c; }
+  .muted { color: #666; font-size: 13px; }
+  details { margin-top: 18px; } fieldset { border: 1px solid #ddd; margin: 8px 0; }
+</style>
+</head>
+<body>
+<h1>Linux RAG</h1>
+<p class="sub">Ask about syscalls, kernel internals, kernel docs and man pages. Answers come from Grok and cite the files they used.</p>
+
+<textarea id="q" maxlength="2000" placeholder="e.g. which syscall creates a pipe with flags?"></textarea>
+<div class="ex" id="examples">
+  <button type="button">Which syscall creates a pipe with flags?</button>
+  <button type="button">What does EPOLLEXCLUSIVE do?</button>
+  <button type="button">What is the x86_64 syscall number of openat?</button>
+  <button type="button">How does the kernel pick which process the OOM killer kills?</button>
+  <button type="button">Difference between MAP_PRIVATE and MAP_SHARED?</button>
+  <button type="button">Explain this: BUG: unable to handle page fault for address</button>
+  <button type="button">What does SO_REUSEPORT do and where is it implemented?</button>
+  <button type="button">Where does the kernel copy argv/envp during execve?</button>
+</div>
+<button id="ask" type="button">Ask</button> <span id="status" class="muted"></span>
+<div id="answer" aria-live="polite"></div>
+<ol id="sources"></ol>
+
+<details>
+  <summary>Upload text to ask about (logs, configs, panics)</summary>
+  <p class="muted">Text files only, up to 1 MB each, 3 per session. Only you can see them; they disappear when your session ends (2 hours idle).</p>
+  <input type="file" id="file" accept=".txt,.log,.conf,.cfg,.ini,.json,.yaml,.yml,.md,.rst,.c,.h,.sh,.service,text/*">
+  <button id="clear" type="button">Clear uploads</button>
+  <div id="files" class="muted"></div>
+</details>
+
+<details id="admin">
+  <summary>Admin</summary>
+  <p class="muted">Admins can also search this server's redacted nginx/systemd configs and logs.</p>
+  <fieldset><input type="password" id="pw" autocomplete="current-password" placeholder="admin password">
+  <button id="login" type="button">Log in</button> <button id="logout" type="button">Log out</button>
+  <span id="adminstate" class="muted"></span></fieldset>
+</details>
+
+<p class="muted">Sources: Linux kernel Documentation/ and source (include/uapi, kernel, fs, mm, net/core, x86 syscall tables), man-pages sections 2–8. Limited questions per day per visitor. <a href="https://github.com/yishengjiang99/linux-rag">Code</a>.</p>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+[Unit]
+Description=Linux RAG: collect + redact this server's configs and logs into the admin-only index
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/linux-rag
+ExecStart=/usr/bin/python3 -m rag.collect_prod --local /var/lib/linux-rag/prod.db
+ExecStartPost=/bin/chown root:linux-rag /var/lib/linux-rag/prod.db
+Nice=10

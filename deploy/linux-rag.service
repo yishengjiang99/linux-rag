@@ -1,0 +1,28 @@
+[Unit]
+Description=Linux RAG (grepawk.com/rag): search over kernel docs, source, man pages + Grok answers
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=linux-rag
+Group=linux-rag
+WorkingDirectory=/opt/linux-rag
+# XAI_API_KEY and RAG_ADMIN_PASSWORD live here (root:root 0600, read by systemd before dropping privileges)
+EnvironmentFile=/etc/linux-rag/secrets
+Environment=RAG_HOST=127.0.0.1 RAG_PORT=8795 RAG_DATA=/var/lib/linux-rag
+Environment=RAG_PER_IP_DAILY=20 RAG_GLOBAL_DAILY=400 RAG_MAX_TOKENS=700
+ExecStart=/usr/bin/python3 -m rag.server
+Restart=on-failure
+RestartSec=3
+MemoryMax=512M
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/opt/linux-rag /var/lib/linux-rag
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target
