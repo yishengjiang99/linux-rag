@@ -3,6 +3,7 @@
   python3 -m rag.index man   MAN_PAGES_DIR  data/man.db
   python3 -m rag.index kdocs LINUX_DIR      data/kdocs.db
   python3 -m rag.index src   LINUX_DIR      data/src.db
+  python3 -m rag.index sys   samples/sys_snapshot.json data/sys.db
 (prod logs/configs: python3 -m rag.collect_prod)
 """
 import os
@@ -10,7 +11,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
-from rag.chunk import c_chunks, man_chunks, rst_chunks, text_chunks
+from rag.chunk import c_chunks, man_chunks, rst_chunks, split_long, text_chunks
 
 SCHEMA = """CREATE VIRTUAL TABLE chunks USING fts5(
   title, path, body, loc UNINDEXED, tokenize = "porter unicode61 tokenchars '_'")"""
@@ -59,15 +60,38 @@ def build_man(root):
     return out
 
 
+def abi_chunks(src, rel):
+    """Documentation/ABI files: one chunk per `What:` entry (sysfs/procfs attribute docs)."""
+    out, cur = [], []
+    for line in src.split("\n") + ["What:"]:
+        if line.startswith("What:") and cur and not cur[-1].startswith("What:"):
+            body = "\n".join(cur).strip()
+            what = " ".join(l[5:].strip() for l in cur if l.startswith("What:"))
+            if what:
+                out += split_long(what[:200], rel, "", body)
+            cur = []
+        cur.append(line)
+    return out
+
+
 def build_kdocs(root):
     root = Path(root)
     out = []
     for f in sorted((root / "Documentation").rglob("*")):
         rel = f.relative_to(root).as_posix()
-        if not f.is_file() or "/translations/" in rel or f.suffix not in (".rst", ".txt"):
+        if not f.is_file() or "/translations/" in rel:
             continue
-        out += rst_chunks(read(f), rel)
+        if rel.startswith("Documentation/ABI/") and not f.suffix:
+            out += abi_chunks(read(f), rel)
+        elif f.suffix in (".rst", ".txt"):
+            out += rst_chunks(read(f), rel)
     return out
+
+
+def build_sys(snapshot_json):
+    from rag.snapshot import to_chunks
+    import json
+    return to_chunks(json.loads(Path(snapshot_json).read_text())["files"], "sample")
 
 
 def build_src(root):
@@ -95,7 +119,7 @@ def build_src(root):
 
 def main(argv):
     kind, src, dst = argv[1:4]
-    chunks = {"man": build_man, "kdocs": build_kdocs, "src": build_src}[kind](src)
+    chunks = {"man": build_man, "kdocs": build_kdocs, "src": build_src, "sys": build_sys}[kind](src)
     Path(dst).parent.mkdir(parents=True, exist_ok=True)
     n = write_db(dst, chunks)
     print(f"{kind}: {n} chunks, {os.path.getsize(dst) / 1e6:.1f} MB -> {dst}")

@@ -10,17 +10,31 @@ some all more most other such only own same very just here please".split()
 """.split())
 
 # corpus name -> (db file, results to take)
-PUBLIC = [("man", 3), ("kdocs", 2), ("src", 3)]
+PUBLIC = [("man", 3), ("kdocs", 2), ("src", 3), ("sys", 2)]
 ADMIN = [("prod", 6)]
 
 
-def fts_query(text, max_terms=12):
+def fts_query(text, max_terms=16):
     terms = []
+    # /proc/meminfo -> proc_meminfo, /proc/sys/vm -> proc_sys_vm (man page names)
+    for m in re.findall(r"/proc/([\w/]+)", text):
+        parts = [x for x in m.split("/") if x and x not in ("self",) and not x.isdigit()]
+        for n in range(len(parts), 0, -1):
+            t = "proc_" + "_".join(parts[:n]).lower()
+            if t not in terms:
+                terms.append(t)
+    words = []
     for t in re.findall(r"[A-Za-z0-9_]+", text):
         t = t.lower()
-        if len(t) < 2 or t in STOP or t in terms:
+        if len(t) < 2 or t in STOP:
             continue
-        terms.append(t)
+        words.append(t)
+        if t not in terms:
+            terms.append(t)
+    # identifiers are single tokens (tokenchars '_'): "transparent hugepage" -> transparent_hugepage
+    for a, b in zip(words, words[1:]):
+        if "_" not in a + b and f"{a}_{b}" not in terms:
+            terms.append(f"{a}_{b}")
     return " OR ".join(f'"{t}"' for t in terms[:max_terms])
 
 
@@ -32,6 +46,25 @@ def search_db(db, query, k):
         "SELECT title, path, loc, body, bm25(chunks, 8.0, 3.0, 1.0) AS s FROM chunks "
         "WHERE chunks MATCH ? ORDER BY s LIMIT ?", (q, k)).fetchall()
     return [{"title": r[0], "path": r[1], "loc": r[2], "body": r[3], "score": r[4]} for r in rows]
+
+
+def search_path(db, query, path):
+    """Best chunk of one document for this query, else its first chunk."""
+    cols = "title, path, loc, body"
+    q = fts_query(query)
+    row = None
+    if q:
+        row = db.execute(f"SELECT {cols}, bm25(chunks, 8.0, 3.0, 1.0) AS s FROM chunks WHERE chunks MATCH ? "
+                         "AND path = ? ORDER BY s LIMIT 1", (q, path)).fetchone()
+    if not row:
+        row = db.execute(f"SELECT {cols}, 0 FROM chunks WHERE path = ? LIMIT 1", (path,)).fetchone()
+    return {"title": row[0], "path": row[1], "loc": row[2], "body": row[3], "score": row[4]} if row else None
+
+
+def doc_refs(body):
+    """The `Docs: a; b` line that snapshot chunks carry."""
+    m = re.search(r"^Docs: (.+)$", body[:600], re.M)
+    return [r.strip() for r in m.group(1).split(";")] if m else []
 
 
 class Index:
@@ -63,21 +96,49 @@ class Index:
 
     def search(self, query, admin=False, uploads=None):
         self.reload()
+        # order matters: the prompt is filled in this order until the context budget runs out,
+        # so the visitor's own uploads and (for admins) this server's data go first
         hits = []
-        for name, k in PUBLIC + (ADMIN if admin else []):
-            if name in self.dbs:
-                for h in search_db(self.dbs[name], query, k):
-                    h["corpus"] = name
-                    hits.append(h)
         if uploads is not None:
             for h in search_db(uploads, query, 3):
                 h["corpus"] = "upload"
                 hits.append(h)
+        for name, k in (ADMIN if admin else []) + PUBLIC:
+            if name in self.dbs:
+                for h in search_db(self.dbs[name], query, k):
+                    h["corpus"] = name
+                    hits.append(h)
         # drop weak matches relative to the best one in the same corpus (bm25: lower is better)
         best = {}
         for h in hits:
             best[h["corpus"]] = min(best.get(h["corpus"], 0), h["score"])
-        return [h for h in hits if h["score"] <= best[h["corpus"]] * 0.5]
+        hits = [h for h in hits if h["score"] <= best[h["corpus"]] * 0.5]
+        return self.pair_docs(query, hits)
+
+    def pair_docs(self, query, hits, max_snapshots=2, max_refs=2):
+        """Put each snapshot (sys/prod) next to the man page / kernel doc section that explains it."""
+        out, seen, paired = [], {(h["corpus"], h["path"], h["loc"], h["title"]) for h in hits}, 0
+        qwords = set(re.findall(r"[a-z0-9]+", query.lower())) - STOP - {"proc", "sys", "etc", "linux"}
+        for h in hits:
+            out.append(h)
+            if h["corpus"] not in ("sys", "prod") or paired >= max_snapshots:
+                continue
+            if not qwords & set(re.findall(r"[a-z0-9]+", h["path"].lower())):
+                continue  # only pair snapshots the question is actually about
+            refs = doc_refs(h["body"])[:max_refs]
+            if refs:
+                paired += 1
+            for ref in refs:
+                corpus = "man" if ref.startswith("man") else "kdocs"
+                if corpus not in self.dbs:
+                    continue
+                d = search_path(self.dbs[corpus], query, ref)
+                if d and (corpus, d["path"], d["loc"], d["title"]) not in seen:
+                    seen.add((corpus, d["path"], d["loc"], d["title"]))
+                    d["corpus"] = corpus
+                    d["paired_with"] = h["path"]
+                    out.append(d)
+        return out
 
 
 def upload_db():

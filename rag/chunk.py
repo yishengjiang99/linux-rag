@@ -85,7 +85,7 @@ def man_chunks(src, path):
     label = f"{name}({sec})"
     out = []
     for head, text in sections:
-        if head in ("NAME", "LIBRARY", "COLOPHON"):
+        if head in ("NAME", "LIBRARY", "COLOPHON", "SEE ALSO", "STANDARDS"):
             continue
         body = f"{label}: {summary}\n{head}\n{text}"
         out += split_long(f"{label} {head}", path, "", body)

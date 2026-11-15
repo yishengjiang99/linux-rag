@@ -1,0 +1,403 @@
+{
+ "source": "Linux 6.12.113+",
+ "files": [
+  {
+   "path": "/proc/meminfo",
+   "docs": [
+    "man5/proc_meminfo.5",
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "MemTotal:       16386416 kB\nMemFree:         4442712 kB\nMemAvailable:    6929388 kB\nBuffers:          381624 kB\nCached:          1763504 kB\nSwapCached:            0 kB\nActive:          1605324 kB\nInactive:        3039200 kB\nActive(anon):       1456 kB\nInactive(anon):  2559768 kB\nActive(file):    1603868 kB\nInactive(file):   479432 kB\nUnevictable:          16 kB\nMlocked:              16 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:                 4 kB\nWriteback:             0 kB\nAnonPages:       2499900 kB\nMapped:           332636 kB\nShmem:             61856 kB\nKReclaimable:     741304 kB\nSlab:             866376 kB\nSReclaimable:     741304 kB\nSUnreclaim:       125072 kB\nKernelStack:       14256 kB\nPageTables:        72244 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     8193208 kB\nCommitted_AS:    6504360 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       17568 kB\nVmallocChunk:          0 kB\nPercpu:             3168 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:       18432 kB\nDirectMap2M:     3127296 kB\nDirectMap1G:    15728640 kB"
+  },
+  {
+   "path": "/proc/cpuinfo",
+   "docs": [
+    "man5/proc_cpuinfo.5",
+    "Documentation/arch/x86/cpuinfo.rst"
+   ],
+   "text": "processor\t: 0\nvendor_id\t: GenuineIntel\ncpu family\t: 6\nmodel\t\t: 207\nmodel name\t: Intel(R) Xeon(R) Processor\nstepping\t: 2\nmicrocode\t: 0x1\ncpu MHz\t\t: 2400.000\ncache size\t: 327680 KB\nphysical id\t: 0\nsiblings\t: 8\ncore id\t\t: 0\ncpu cores\t: 8\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 32\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc pebs bts rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq dtes64 vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 wbnoinvd arat vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect cldemote movdiri movdir64b fsrm md_clear serialize tsxldtrk amx_bf16 avx512_fp16 amx_tile amx_int8 flush_l1d arch_capabilities\nvmx flags\t: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb ept_5level flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid shadow_vmcs pml tsc_scaling\nbugs\t\t: spectre_v1 spectre_v2 spec_store_bypass swapgs taa eibrs_pbrsb bhi ibpb_no_ret\nbogomips\t: 4800.00\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 57 bits virtual\npower management:"
+  },
+  {
+   "path": "/proc/stat",
+   "docs": [
+    "man5/proc_stat.5",
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "cpu  1185049 1 446305 23729624 367266 0 151096 7572 0 0\ncpu0 145510 0 55092 2975330 32856 0 90175 966 0 0\ncpu1 152287 0 54912 2996513 32132 0 31596 983 0 0\ncpu2 146400 0 56934 2901600 90799 0 11636 967 0 0\ncpu3 151925 0 56580 2915207 30194 0 7415 988 0 0\ncpu4 155593 0 54789 2993259 29219 0 3345 881 0 0\ncpu5 163171 0 56389 3004374 26563 0 1935 884 0 0\ncpu6 129113 0 54346 2974715 21081 0 3868 940 0 0\ncpu7 141047 0 57261 2968622 104419 0 1122 961 0 0\nintr 390641532 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 39 39 262 0 113 4151994 4145704 1023 1576 0 525 0 11095 0 1992982 1565602 0 123 236 39 0 2276568 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\nctxt 706875068\nbtime 1794680019\nprocesses 431869\nprocs_running 1\nprocs_blocked 0\nsoftirq 38673768 0 3159721 117 6514196 2287540 0 339144 11699538 66 14673446"
+  },
+  {
+   "path": "/proc/vmstat",
+   "docs": [
+    "man5/proc_vmstat.5",
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "nr_free_pages 1110678\nnr_zone_inactive_anon 640072\nnr_zone_active_anon 364\nnr_zone_inactive_file 119858\nnr_zone_active_file 400967\nnr_zone_unevictable 4\nnr_zone_write_pending 1\nnr_mlock 4\nnr_bounce 0\nnr_free_cma 0\nnuma_hit 441077680\nnuma_miss 0\nnuma_foreign 0\nnuma_interleave 1216\nnuma_local 441077680\nnuma_other 0\nnr_inactive_anon 640072\nnr_active_anon 364\nnr_inactive_file 119858\nnr_active_file 400967\nnr_unevictable 4\nnr_slab_reclaimable 185326\nnr_slab_unreclaimable 31268\nnr_isolated_anon 0\nnr_isolated_file 0\nworkingset_nodes 140672\nworkingset_refault_anon 0\nworkingset_refault_file 29839276\nworkingset_activate_anon 0\nworkingset_activate_file 1119099\nworkingset_restore_anon 0\nworkingset_restore_file 415325\nworkingset_nodereclaim 1238488\nnr_anon_pages 625105\nnr_mapped 83159\nnr_file_pages 536282\nnr_dirty 1\nnr_writeback 0\nnr_writeback_temp 0\nnr_shmem 15464\nnr_shmem_hugepages 0\nnr_shmem_pmdmapped 0\nnr_file_hugepages 0\nnr_file_pmdmapped 0\nnr_anon_transparent_hugepages 0\nnr_vmscan_write 0\nnr_vmscan_immediate_reclaim 54026\nnr_dirtied 52496618\nnr_written 24683857\nnr_throttled_written 0\nnr_kernel_misc_reclaimable 0\nnr_foll_pin_acquired 0\nnr_foll_pin_released 0\nnr_kernel_stack 14256\nnr_page_table_pages 18061\nnr_sec_page_table_pages 0\nnr_iommu_pages 0\nnr_swapcached 0\npgpromote_success 0\npgpromote_candidate 0\npgdemote_kswapd 0\npgdemote_direct 0\npgdemote_khugepaged 0\nnr_dirty_threshold 317785\nnr_dirty_background_threshold 158698\nnr_memmap_pages 0\nnr_memmap_boot_pages 65536\npgpgin 272693716\npgpgout 106271128\npswpin 0\npswpout 0\npgalloc_dma 0\npgalloc_dma32 85282495\npgalloc_normal 384101517\npgalloc_movable 0\nallocstall_dma 0\nallocstall_dma32 0\nallocstall_normal 901\nallocstall_movable 6485\npgskip_dma 0\npgskip_dma32 0\npgskip_normal 19086520\npgskip_movable 0\npgfree 481823493\npgactivate 13640678\npgdeactivate 4292179\npglazyfree 0\npgfault 238317228\npgmajfault 43234\npglazyfreed 0\npgrefill 6446278\npgreuse 15438921\npgsteal_kswapd 88630835\npgsteal_direct 446987\npgsteal_khugepaged 418\npgscan_kswapd 105965570\npgscan_direct 456053\npgscan_khugepaged 418\npgscan_direct_throttle 0\npgscan_anon 0\npgscan_file 106422041\npgsteal_anon 0\npgsteal_file 89078240\nzone_reclaim_success 0\nzone_reclaim_failed 0\npginodesteal 4454\nslabs_scanned 55716087\nkswapd_inodesteal 1033366\nkswapd_low_wmark_hit_quickly 14515\nkswapd_high_wmark_hit_quickly 1075\npageoutrun 17577\npgrotated 54008\ndrop_pagecache 0\ndrop_slab 0\noom_kill 0\nnuma_pte_updates 0\nnuma_huge_pte_updates 0\nnuma_hint_faults 0\nnuma_hint_faults_local 0\nnuma_pages_migrated 0\npgmigrate_success 11314248\npgmigrate_fail 250565\nthp_migration_success 0\nthp_migration_fail 0\nthp_migration_split 0\ncompact_migrate_scanned 44725994\ncompact_free_scanned 308514297\ncompact_isolated 22959121\ncompact_stall 39\ncompact_fail 39\ncompact_success 0\ncompact_daemon_wake 3546\ncompact_daemon_migrate_scanned 44725960\ncompact_daemon_free_scanned 308514297\nhtlb_buddy_alloc_success 0\nhtlb_buddy_alloc_fail 0\nunevictable_pgs_culled 650\nunevictable_pgs_scanned 0\nunevictable_pgs_rescued 646\nunevictable_pgs_mlocked 650\nunevictable_pgs_munlocked 616\nunevictable_pgs_cleared 0\nunevictable_pgs_stranded 30\nthp_fault_alloc 5283\nthp_fault_fallback 11\nthp_fault_fallback_charge 0\nthp_collapse_alloc 0\nthp_collapse_alloc_failed 1\nthp_file_alloc 0\nthp_file_fallback 0\nthp_file_fallback_charge 0\nthp_file_mapped 0\nthp_split_page 0\nthp_split_page_failed 0\nthp_deferred_split_page 594\nthp_underused_split_page 0\nthp_split_pmd 594\nthp_scan_exceed_none_pte 0\nthp_scan_exceed_swap_pte 0\nthp_scan_exceed_share_pte 0\nthp_split_pud 0\nthp_zero_page_alloc 0\nthp_zero_page_alloc_failed 0\nthp_swpout 0\nthp_swpout_fallback 0\nballoon_inflate 45244207\nballoon_deflate 43671343\nballoon_migrate 3975125\nswap_ra 0\nswap_ra_hit 0\nswpin_zero 0\nswpout_zero 0\nksm_swpin_copy 0\ncow_ksm 0\nzswpin 0\nzswpout 0\nzswpwb 0\ndirect_map_level2_splits 0\ndirect_map_level3_splits 0\nnr_unstable 0"
+  },
+  {
+   "path": "/proc/loadavg",
+   "docs": [
+    "man5/proc_loadavg.5"
+   ],
+   "text": "0.45 1.11 0.78 1/893 428610"
+  },
+  {
+   "path": "/proc/uptime",
+   "docs": [
+    "man5/proc_uptime.5"
+   ],
+   "text": "32895.93 237296.28"
+  },
+  {
+   "path": "/proc/version",
+   "docs": [
+    "man5/proc_version.5"
+   ],
+   "text": "Linux version 6.12.113+ (root@045e406476fc) (gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40) #1 SMP PREEMPT_DYNAMIC Wed Nov 11 22:36:51 UTC 2026"
+  },
+  {
+   "path": "/proc/cmdline",
+   "docs": [
+    "man5/proc_cmdline.5",
+    "Documentation/admin-guide/kernel-parameters.rst"
+   ],
+   "text": "console=ttyS0 root=/dev/vda random.trust_cpu=on ip=[IP]::[IP]:[IP]::eth0:off rw loglevel=7 earlyprintk=ttyS0 print-fatal-signals=[REDACTED] systemd.unified_cgroup_hierarchy=1 systemd.setenv=SWAP_SIZE_MB=0 reboot=k panic=1 anyrun.guest_control_ports=lockdown i8042.noaux=1 i8042.nomux=1 i8042.dumbkbd=1 clocksource=kvm-clock tsc=unstable nosoftlockup root=/dev/vda rw"
+  },
+  {
+   "path": "/proc/filesystems",
+   "docs": [
+    "man5/proc_filesystems.5",
+    "man5/filesystems.5"
+   ],
+   "text": "nodev\tsysfs\nnodev\ttmpfs\nnodev\tproc\nnodev\tcgroup\nnodev\tcgroup2\nnodev\tdevtmpfs\nnodev\tbinfmt_misc\nnodev\tdebugfs\nnodev\ttracefs\nnodev\tsecurityfs\nnodev\tsockfs\nnodev\tbpf\nnodev\tpipefs\nnodev\tramfs\nnodev\thugetlbfs\nnodev\trpc_pipefs\nnodev\tdevpts\n\text3\n\text2\n\text4\n\tsquashfs\nnodev\tnfs\nnodev\tnfs4\nnodev\tautofs\n\tfuseblk\nnodev\tfuse\nnodev\tfusectl\nnodev\toverlay\n\txfs\n\terofs\nnodev\tmqueue\nnodev\tselinuxfs\nnodev\tpstore"
+  },
+  {
+   "path": "/proc/mounts",
+   "docs": [
+    "man5/proc_mounts.5",
+    "man5/proc_pid_mounts.5"
+   ],
+   "text": "/dev/vdb / ext4 rw,relatime 0 0\nproc /proc proc rw,relatime 0 0\ndevtmpfs /dev devtmpfs rw,relatime,size=8191116k,nr_inodes=2047779,mode=755 0 0\ntmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0\ndevpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0\nhugetlbfs /dev/hugepages hugetlbfs rw,relatime,pagesize=2M 0 0\nmqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0\nshm /dev/shm tmpfs rw,nosuid,nodev,noexec,relatime 0 0\nsysfs /sys sysfs rw,relatime 0 0\nsecurityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0\nselinuxfs /sys/fs/selinux selinuxfs rw,nosuid,noexec,relatime 0 0\ncgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot 0 0\npstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0\nbpf /sys/fs/bpf bpf rw,nosuid,nodev,noexec,relatime,mode=700 0 0\ntracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0\ndebugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0\nfusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0\n/dev/vdb /var/lib/sand-box-runtime/allow ext4 ro,relatime 0 0\ncursor-agent-store /cursor/stores fuse.agent-store rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other 0 0"
+  },
+  {
+   "path": "/proc/swaps",
+   "docs": [
+    "man5/proc_swaps.5"
+   ],
+   "text": "Filename\t\t\t\tType\t\tSize\t\tUsed\t\tPriority"
+  },
+  {
+   "path": "/proc/partitions",
+   "docs": [
+    "man5/proc_partitions.5"
+   ],
+   "text": "major minor  #blocks  name\n\n 254        0  134217728 vda\n 254       16  134217728 vdb"
+  },
+  {
+   "path": "/proc/diskstats",
+   "docs": [
+    "man5/proc_diskstats.5",
+    "Documentation/admin-guide/iostats.rst"
+   ],
+   "text": "   7       0 loop0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       1 loop1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       2 loop2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       3 loop3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       4 loop4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       5 loop5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       6 loop6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n   7       7 loop7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 254       0 vda 12769 0 394246 35159 496166 0 3969400 442165 0 5924 477324 0 0 0 0 0 0\n 254      16 vdb 26610663 0 544993186 106355831 10144277 0 208572856 10962278 0 2616776 117318110 0 0 0 0 0 0"
+  },
+  {
+   "path": "/proc/interrupts",
+   "docs": [
+    "man5/proc_interrupts.5",
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "           CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       \n 24:         39          0          0          0          0          0          0          0   IO-APIC   5-edge      ACPI:Ged\n 25:          0         39          0          0          0          0          0          0   IO-APIC   6-edge      ACPI:Ged\n 26:          0        262          0          0          0          0          0          0   IO-APIC   4-edge      ttyS0\n 28:          0          0        113          0          0          0          0          0  PCI-MSIX-0000:00:01.0   0-edge      virtio0-config\n 29:          0          0          0    4151994          0          0          0          0  PCI-MSIX-0000:00:01.0   1-edge      virtio0-inflate\n 30:          0          0          0          0    4145704          0          0          0  PCI-MSIX-0000:00:01.0   2-edge      virtio0-deflate\n 31:          0          0          0          0          0       1023          0          0  PCI-MSIX-0000:00:01.0   3-edge      virtio0-stats\n 32:          0          0          0          0          0          0       1576          0  PCI-MSIX-0000:00:01.0   4-edge      virtio0-reporting_vq\n 33:          0          0          0          0          0          0          0          0  PCI-MSIX-0000:00:05.0   0-edge      virtio4-config\n 34:        525          0          0          0          0          0          0          0  PCI-MSIX-0000:00:05.0   1-edge      virtio4-input\n 35:          0          0          0          0          0          0          0          0  PCI-MSIX-0000:00:02.0   0-edge      virtio1-config\n 36:          0          0          0          0          0          0          0      11095  PCI-MSIX-0000:00:02.0   1-edge      virtio1-req.0\n 37:          0          0          0          0          0          0          0          0  PCI-MSIX-0000:00:03.0   0-edge      virtio2-config\n 38:          0          0          0    1992982          0          0          0          0  PCI-MSIX-0000:00:03.0   1-edge      virtio2-input.0\n 39:          0          0          0          0    1565602          0          0          0  PCI-MSIX-0000:00:03.0   2-edge      virtio2-output.0\n 40:          0          0          0          0          0          0          0          0  PCI-MSIX-0000:00:04.0   0-edge      virtio3-config\n 41:          0          0          0          0          0          0        123          0  PCI-MSIX-0000:00:04.0   1-edge      virtio3-rx\n 42:          0          0          0          0          0          0          0        236  PCI-MSIX-0000:00:04.0   2-edge      virtio3-tx\n 43:         39          0          0          0          0          0          0          0  PCI-MSIX-0000:00:04.0   3-edge      virtio3-event\n 44:          0          0          0          0          0          0          0          0  PCI-MSIX-0000:00:06.0   0-edge      virtio5-config\n 45:          0          0          0          0          0          0    2276568          0  PCI-MSIX-0000:00:06.0   1-edge      virtio5-req.0\nNMI:          0          0          0          0          0          0          0          0   Non-maskable interrupts\nLOC:    4650306    4723449    4719004    4823918    4751219    4702519    4841655    4681001   Local timer interrupts\nSPU:          0          0          0          0          0          0          0          0   Spurious interrupts\n... (12 more lines)"
+  },
+  {
+   "path": "/proc/softirqs",
+   "docs": [
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "                    CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       \n          HI:          0          0          0          0          0          0          0          0\n       TIMER:     348077     354040     579975     436549     387460     338696     379981     334946\n      NET_TX:         12          5          3         57         22         13          3          2\n      NET_RX:     380775     394560     370743    2322559    1849063     389887     412620     393989\n       BLOCK:          0          0          0          0          0          0    2276446      11094\n    IRQ_POLL:          0          0          0          0          0          0          0          0\n     TASKLET:       2014       1988       2187      33160     291536       3462       2460       2337\n       SCHED:    2433806    1593175    1349664    1304015    1268926    1251561    1255560    1242842\n     HRTIMER:          0          1          0         65          0          0          0          0\n         RCU:    1819728    1816190    1840627    1840706    1833807    1811799    1892176    1818477"
+  },
+  {
+   "path": "/proc/buddyinfo",
+   "docs": [
+    "man5/proc_buddyinfo.5",
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "Node 0, zone      DMA      0      0      0      0      0      0      0      0      1      1      3 \nNode 0, zone    DMA32    212     63    663   1272    382     48      4      0      0      0      0 \nNode 0, zone   Normal  91050 171167  70127   8121   2195   1130    577    288    126    116     68 "
+  },
+  {
+   "path": "/proc/zoneinfo",
+   "docs": [
+    "man5/proc_zoneinfo.5",
+    "Documentation/filesystems/proc.rst"
+   ],
+   "text": "Node 0, zone      DMA\n  per-node stats\n      nr_inactive_anon 640215\n      nr_active_anon 365\n      nr_inactive_file 119858\n      nr_active_file 400967\n      nr_unevictable 4\n      nr_slab_reclaimable 185326\n      nr_slab_unreclaimable 31268\n      nr_isolated_anon 0\n      nr_isolated_file 0\n      workingset_nodes 140672\n      workingset_refault_anon 0\n      workingset_refault_file 29839276\n      workingset_activate_anon 0\n      workingset_activate_file 1119099\n      workingset_restore_anon 0\n      workingset_restore_file 415325\n      workingset_nodereclaim 1238488\n      nr_anon_pages 625184\n      nr_mapped    83187\n      nr_file_pages 536282\n      nr_dirty     1\n      nr_writeback 0\n      nr_writeback_temp 0\n      nr_shmem     15464\n      nr_shmem_hugepages 0\n      nr_shmem_pmdmapped 0\n      nr_file_hugepages 0\n      nr_file_pmdmapped 0\n      nr_anon_transparent_hugepages 0\n      nr_vmscan_write 0\n      nr_vmscan_immediate_reclaim 54026\n      nr_dirtied   52496618\n      nr_written   24683857\n      nr_throttled_written 0\n      nr_kernel_misc_reclaimable 0\n      nr_foll_pin_acquired 0\n      nr_foll_pin_released 0\n      nr_kernel_stack 14408\n      nr_page_table_pages 18115\n      nr_sec_page_table_pages 0\n      nr_iommu_pages 0\n      nr_swapcached 0\n      pgpromote_success 0\n      pgpromote_candidate 0\n      pgdemote_kswapd 0\n      pgdemote_direct 0\n      pgdemote_khugepaged 0\n  pages free     3840\n        boost    0\n        min      15\n        low      18\n        high     21\n        promo    24\n        spanned  4095\n        present  3998\n        managed  3840\n        cma      0\n        protection: (0, 2958, 15987, 15987)\n      nr_free_pages 3840\n      nr_zone_inactive_anon 0\n      nr_zone_active_anon 0\n      nr_zone_inactive_file 0\n      nr_zone_active_file 0\n      nr_zone_unevictable 0\n      nr_zone_write_pending 0\n      nr_mlock     0\n      nr_bounce    0\n      nr_free_cma  0\n      numa_hit     0\n      numa_miss    0\n      numa_foreign 0\n      numa_interleave 0\n      numa_local   0\n      numa_other   0\n  pagesets\n    cpu: 0\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 1\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 2\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 3\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 4\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 5\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 6\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n    cpu: 7\n              count: 0\n              high:  0\n              batch: 1\n  vm stats threshold: 8\n  node_unreclaimable:  0\n  start_pfn:           1\nNode 0, zone    DMA32\n... (153 more lines)"
+  },
+  {
+   "path": "/proc/pressure/cpu",
+   "docs": [
+    "Documentation/accounting/psi.rst"
+   ],
+   "text": "some avg10=0.00 avg60=0.04 avg300=0.25 total=213157696\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0"
+  },
+  {
+   "path": "/proc/pressure/memory",
+   "docs": [
+    "Documentation/accounting/psi.rst"
+   ],
+   "text": "some avg10=0.00 avg60=0.03 avg300=0.16 total=39580930\nfull avg10=0.00 avg60=0.03 avg300=0.16 total=39046666"
+  },
+  {
+   "path": "/proc/pressure/io",
+   "docs": [
+    "Documentation/accounting/psi.rst"
+   ],
+   "text": "some avg10=0.00 avg60=0.06 avg300=0.14 total=366562646\nfull avg10=0.00 avg60=0.06 avg300=0.14 total=354336729"
+  },
+  {
+   "path": "/proc/sys/kernel",
+   "docs": [
+    "man5/proc_sys_kernel.5",
+    "Documentation/admin-guide/sysctl/kernel.rst"
+   ],
+   "text": "kernel.acct = 4 2 30\nkernel.acpi_video_flags = 0\nkernel.arch = x86_64\nkernel.auto_msgmni = 0\nkernel.bootloader_type = 176\nkernel.bootloader_version = 0\nkernel.bpf_stats_enabled = 0\nkernel.cap_last_cap = 40\nkernel.core_file_note_size_limit = 4194304\nkernel.core_pattern = /tmp/core.%e.%p.%t\nkernel.core_pipe_limit = 0\nkernel.core_sort_vma = 0\nkernel.core_uses_pid = 0\nkernel.ctrl-alt-del = 0\nkernel.dmesg_restrict = 0\nkernel.ftrace_dump_on_oops = 0\nkernel.ftrace_enabled = 1\nkernel.hardlockup_all_cpu_backtrace = 0\nkernel.hardlockup_panic = 0\nkernel.hotplug = /sbin/hotplug\nkernel.hung_task_all_cpu_backtrace = 0\nkernel.hung_task_check_count = 4194304\nkernel.hung_task_check_interval_secs = 0\nkernel.hung_task_panic = 0\nkernel.hung_task_timeout_secs = 120\nkernel.hung_task_warnings = 10\nkernel.io_delay_type = 0\nkernel.io_uring_disabled = 0\nkernel.io_uring_group = -1\nkernel.kexec_load_disabled = 0\nkernel.kexec_load_limit_panic = -1\nkernel.kexec_load_limit_reboot = -1\nkernel.kptr_restrict = 0\nkernel.max_lock_depth = 1024\nkernel.max_rcu_stall_to_panic = 0\nkernel.modprobe = /sbin/modprobe\nkernel.modules_disabled = 0\nkernel.msgmax = 8192\nkernel.msgmnb = 16384\nkernel.msgmni = 32000\nkernel.ngroups_max = 65536\nkernel.nmi_watchdog = 0\nkernel.numa_balancing = 0\nkernel.numa_balancing_promote_rate_limit_MBps = 65536\nkernel.oops_all_cpu_backtrace = 0\nkernel.oops_limit = 10000\nkernel.osrelease = 6.12.113+\nkernel.ostype = Linux\nkernel.overflowgid = 65534\nkernel.overflowuid = 65534\nkernel.panic = 1\nkernel.panic_on_io_nmi = 0\nkernel.panic_on_oops = 0\nkernel.panic_on_rcu_stall = 0\nkernel.panic_on_unrecovered_nmi = 0\nkernel.panic_on_warn = 0\nkernel.panic_print = 0\nkernel.perf_cpu_time_max_percent = 25\nkernel.perf_event_max_contexts_per_stack = 8\nkernel.perf_event_max_sample_rate = 100000\nkernel.perf_event_max_stack = 127\nkernel.perf_event_mlock_kb = 516\nkernel.perf_event_paranoid = 2\nkernel.pid_max = 4194304\nkernel.poweroff_cmd = /sbin/poweroff\nkernel.print-fatal-signals = [REDACTED]\nkernel.printk = 7 4 1 7\nkernel.printk_delay = 0\nkernel.printk_devkmsg = on\nkernel.printk_ratelimit = 5\nkernel.printk_ratelimit_burst = 10\nkernel.randomize_va_space = 2\nkernel.real-root-dev = 0\nkernel.sched_autogroup_enabled = 1\nkernel.sched_cfs_bandwidth_slice_us = 5000\nkernel.sched_deadline_period_max_us = 4194304\nkernel.sched_deadline_period_min_us = 100\nkernel.sched_rr_timeslice_ms = 100\nkernel.sched_rt_period_us = 1000000\nkernel.sched_rt_runtime_us = 950000\nkernel.sem = 32000 1024000000 500 32000\nkernel.shm_rmid_forced = 0\nkernel.shmall = 18446744073692774399\nkernel.shmmax = 18446744073692774399\nkernel.shmmni = 4096\nkernel.soft_watchdog = 0\nkernel.softlockup_all_cpu_backtrace = 0\nkernel.softlockup_panic = 0\nkernel.split_lock_mitigate = 1\nkernel.sysctl_writes_strict = 1\nkernel.sysrq = 1\nkernel.tainted = 0\nkernel.task_delayacct = 0\nkernel.threads-max = 127982\nkernel.timer_migration = 1\nkernel.traceoff_on_warning = 0\nkernel.tracepoint_printk = 0\nkernel.unknown_nmi_panic = 0\nkernel.unprivileged_bpf_disabled = 2\nkernel.version = #1 SMP PREEMPT_DYNAMIC Wed Nov 11 22:36:51 UTC 2026\nkernel.warn_limit = 0\nkernel.watchdog = 0\nkernel.watchdog_cpumask = 0-7\nkernel.watchdog_thresh = 10"
+  },
+  {
+   "path": "/proc/sys/vm",
+   "docs": [
+    "man5/proc_sys_vm.5",
+    "Documentation/admin-guide/sysctl/vm.rst"
+   ],
+   "text": "vm.admin_reserve_kbytes = 8192\nvm.compact_unevictable_allowed = 1\nvm.compaction_proactiveness = 20\nvm.dirty_background_bytes = 0\nvm.dirty_background_ratio = 10\nvm.dirty_bytes = 0\nvm.dirty_expire_centisecs = 3000\nvm.dirty_ratio = 20\nvm.dirty_writeback_centisecs = 500\nvm.dirtytime_expire_seconds = 43200\nvm.extfrag_threshold = 500\nvm.hugetlb_optimize_vmemmap = 0\nvm.hugetlb_shm_group = 0\nvm.laptop_mode = 0\nvm.legacy_va_layout = 0\nvm.lowmem_reserve_ratio = 256 256 32 0\nvm.max_map_count = 65530\nvm.memfd_noexec = 0\nvm.min_free_kbytes = 67584\nvm.min_slab_ratio = 5\nvm.min_unmapped_ratio = 1\nvm.mmap_min_addr = 4096\nvm.nr_hugepages = 0\nvm.nr_hugepages_mempolicy = 0\nvm.nr_overcommit_hugepages = 0\nvm.numa_stat = 1\nvm.numa_zonelist_order = Node\nvm.oom_dump_tasks = 1\nvm.oom_kill_allocating_task = 0\nvm.overcommit_kbytes = 0\nvm.overcommit_memory = 0\nvm.overcommit_ratio = 50\nvm.page-cluster = 3\nvm.page_lock_unfairness = 5\nvm.panic_on_oom = 0\nvm.percpu_pagelist_high_fraction = 0\nvm.stat_interval = 1\nvm.swappiness = 10\nvm.unprivileged_userfaultfd = 0\nvm.user_reserve_kbytes = 131072\nvm.vfs_cache_pressure = 100\nvm.watermark_boost_factor = 15000\nvm.watermark_scale_factor = 10\nvm.zone_reclaim_mode = 0"
+  },
+  {
+   "path": "/proc/sys/net/core",
+   "docs": [
+    "man5/proc_sys_net.5",
+    "Documentation/admin-guide/sysctl/net.rst"
+   ],
+   "text": "net.core.bpf_jit_enable = 1\nnet.core.busy_poll = 0\nnet.core.busy_read = 0\nnet.core.default_qdisc = pfifo_fast\nnet.core.dev_weight = 64\nnet.core.dev_weight_rx_bias = 1\nnet.core.dev_weight_tx_bias = 1\nnet.core.devconf_inherit_init_net = 0\nnet.core.fb_tunnels_only_for_init_net = 0\nnet.core.flow_limit_cpu_bitmap = 00\nnet.core.flow_limit_table_len = 4096\nnet.core.gro_normal_batch = 8\nnet.core.high_order_alloc_disable = 0\nnet.core.max_skb_frags = 17\nnet.core.mem_pcpu_rsv = 256\nnet.core.message_burst = 10\nnet.core.message_cost = 5\nnet.core.netdev_budget = 300\nnet.core.netdev_budget_usecs = 8000\nnet.core.netdev_max_backlog = 1000\nnet.core.netdev_rss_key = [REDACTED]\nnet.core.netdev_tstamp_prequeue = 1\nnet.core.netdev_unregister_timeout_secs = 10\nnet.core.optmem_max = 131072\nnet.core.rmem_default = 212992\nnet.core.rmem_max = 212992\nnet.core.rps_default_mask = 00\nnet.core.rps_sock_flow_entries = 0\nnet.core.skb_defer_max = 64\nnet.core.somaxconn = 4096\nnet.core.tstamp_allow_data = 1\nnet.core.txrehash = 1\nnet.core.warnings = 0\nnet.core.wmem_default = 212992\nnet.core.wmem_max = 212992\nnet.core.xfrm_acq_expires = 30\nnet.core.xfrm_aevent_etime = 10\nnet.core.xfrm_aevent_rseqth = 2\nnet.core.xfrm_larval_drop = 1"
+  },
+  {
+   "path": "/proc/sys/net/ipv4",
+   "docs": [
+    "man5/proc_sys_net_ipv4.5",
+    "Documentation/networking/ip-sysctl.rst"
+   ],
+   "text": "net.ipv4.cipso_cache_bucket_size = 10\nnet.ipv4.cipso_cache_enable = 1\nnet.ipv4.cipso_rbm_optfmt = 0\nnet.ipv4.cipso_rbm_strictvalid = 1\nnet.ipv4.fib_multipath_hash_fields = 7\nnet.ipv4.fib_multipath_hash_policy = 0\nnet.ipv4.fib_multipath_hash_seed = 0\nnet.ipv4.fib_multipath_use_neigh = 0\nnet.ipv4.fib_notify_on_flag_change = 0\nnet.ipv4.fib_sync_mem = 524288\nnet.ipv4.fwmark_reflect = 0\nnet.ipv4.icmp_echo_enable_probe = 0\nnet.ipv4.icmp_echo_ignore_all = 0\nnet.ipv4.icmp_echo_ignore_broadcasts = 1\nnet.ipv4.icmp_errors_use_inbound_ifaddr = 0\nnet.ipv4.icmp_ignore_bogus_error_responses = 1\nnet.ipv4.icmp_msgs_burst = 50\nnet.ipv4.icmp_msgs_per_sec = 1000\nnet.ipv4.icmp_ratelimit = 1000\nnet.ipv4.icmp_ratemask = 6168\nnet.ipv4.igmp_link_local_mcast_reports = 1\nnet.ipv4.igmp_max_memberships = 20\nnet.ipv4.igmp_max_msf = 10\nnet.ipv4.igmp_qrv = 2\nnet.ipv4.inet_peer_maxttl = 600\nnet.ipv4.inet_peer_minttl = 120\nnet.ipv4.inet_peer_threshold = 65664\nnet.ipv4.ip_autobind_reuse = 0\nnet.ipv4.ip_default_ttl = 127\nnet.ipv4.ip_dynaddr = 0\nnet.ipv4.ip_early_demux = 1\nnet.ipv4.ip_forward = 1\nnet.ipv4.ip_forward_update_priority = 1\nnet.ipv4.ip_forward_use_pmtu = 0\nnet.ipv4.ip_local_port_range = 32768 60999\nnet.ipv4.ip_no_pmtu_disc = 0\nnet.ipv4.ip_nonlocal_bind = 0\nnet.ipv4.ip_unprivileged_port_start = 1024\nnet.ipv4.ipfrag_high_thresh = 4194304\nnet.ipv4.ipfrag_low_thresh = 3145728\nnet.ipv4.ipfrag_max_dist = 64\nnet.ipv4.ipfrag_time = 1\nnet.ipv4.nexthop_compat_mode = 1\nnet.ipv4.ping_group_range = 1 0\nnet.ipv4.raw_l3mdev_accept = 1\nnet.ipv4.tcp_abort_on_overflow = 0\nnet.ipv4.tcp_adv_win_scale = 1\nnet.ipv4.tcp_allowed_congestion_control = reno cubic\nnet.ipv4.tcp_app_win = 31\nnet.ipv4.tcp_autocorking = 1\nnet.ipv4.tcp_available_congestion_control = reno cubic\nnet.ipv4.tcp_available_ulp = espintcp\nnet.ipv4.tcp_backlog_ack_defer = 1\nnet.ipv4.tcp_base_mss = 1024\nnet.ipv4.tcp_challenge_ack_limit = 2147483647\nnet.ipv4.tcp_child_ehash_entries = 0\nnet.ipv4.tcp_comp_sack_delay_ns = 1000000\nnet.ipv4.tcp_comp_sack_nr = 44\nnet.ipv4.tcp_comp_sack_slack_ns = 100000\nnet.ipv4.tcp_congestion_control = cubic\nnet.ipv4.tcp_dsack = 1\nnet.ipv4.tcp_early_demux = 1\nnet.ipv4.tcp_early_retrans = 3\nnet.ipv4.tcp_ecn = 2\nnet.ipv4.tcp_ecn_fallback = 1\nnet.ipv4.tcp_ehash_entries = 131072\nnet.ipv4.tcp_fack = 0\nnet.ipv4.tcp_fastopen = 1\nnet.ipv4.tcp_fastopen_blackhole_timeout_sec = 0\nnet.ipv4.tcp_fin_timeout = 60\nnet.ipv4.tcp_frto = 2\nnet.ipv4.tcp_fwmark_accept = 0\nnet.ipv4.tcp_invalid_ratelimit = 500\nnet.ipv4.tcp_keepalive_intvl = 75\nnet.ipv4.tcp_keepalive_probes = 9\nnet.ipv4.tcp_keepalive_time = 7200\nnet.ipv4.tcp_l3mdev_accept = 0\nnet.ipv4.tcp_limit_output_bytes = 1048576\nnet.ipv4.tcp_low_latency = 0\nnet.ipv4.tcp_max_orphans = 65536\nnet.ipv4.tcp_max_reordering = 300\nnet.ipv4.tcp_max_syn_backlog = 1024\nnet.ipv4.tcp_max_tw_buckets = 65536\nnet.ipv4.tcp_mem = 190791 254388 381582\nnet.ipv4.tcp_migrate_req = 0\nnet.ipv4.tcp_min_rtt_wlen = 300\nnet.ipv4.tcp_min_snd_mss = 48\nnet.ipv4.tcp_min_tso_segs = 2\nnet.ipv4.tcp_moderate_rcvbuf = 1\nnet.ipv4.tcp_mtu_probe_floor = 48\nnet.ipv4.tcp_mtu_probing = 0\nnet.ipv4.tcp_no_metrics_save = 0\nnet.ipv4.tcp_no_ssthresh_metrics_save = 1\nnet.ipv4.tcp_notsent_lowat = 4294967295\nnet.ipv4.tcp_orphan_retries = 0\nnet.ipv4.tcp_pacing_ca_ratio = 120\nnet.ipv4.tcp_pacing_ss_ratio = 200\nnet.ipv4.tcp_pingpong_thresh = 1\nnet.ipv4.tcp_plb_cong_thresh = 128\nnet.ipv4.tcp_plb_enabled = 0\nnet.ipv4.tcp_plb_idle_rehash_rounds = 3\nnet.ipv4.tcp_plb_rehash_rounds = 12\nnet.ipv4.tcp_plb_suspend_rto_sec = 60\nnet.ipv4.tcp_probe_interval = 600\nnet.ipv4.tcp_probe_threshold = 8\nnet.ipv4.tcp_recovery = 1\nnet.ipv4.tcp_reflect_tos = 0\nnet.ipv4.tcp_reordering = 3\nnet.ipv4.tcp_retrans_collapse = 1\nnet.ipv4.tcp_retries1 = 3\nnet.ipv4.tcp_retries2 = 15\nnet.ipv4.tcp_rfc1337 = 0\nnet.ipv4.tcp_rmem = 4096 131072 6291456\nnet.ipv4.tcp_rto_min_us = 200000\nnet.ipv4.tcp_sack = 1\nnet.ipv4.tcp_shrink_window = 0\nnet.ipv4.tcp_slow_start_after_idle = 1\nnet.ipv4.tcp_stdurg = 0\nnet.ipv4.tcp_syn_linear_timeouts = 4\nnet.ipv4.tcp_syn_retries = 6\nnet.ipv4.tcp_synack_retries = 5\nnet.ipv4.tcp_syncookies = [REDACTED]\nnet.ipv4.tcp_thin_linear_timeouts = 0\nnet.ipv4.tcp_timestamps = 1\nnet.ipv4.tcp_tso_rtt_log = 9\nnet.ipv4.tcp_tso_win_divisor = 3\nnet.ipv4.tcp_tw_reuse = 2\nnet.ipv4.tcp_window_scaling = 1\nnet.ipv4.tcp_wmem = 4096 16384 4194304\nnet.ipv4.tcp_workaround_signed_windows = [REDACTED]\nnet.ipv4.udp_child_hash_entries = 0\nnet.ipv4.udp_early_demux = 1\nnet.ipv4.udp_hash_entries = 8192\nnet.ipv4.udp_l3mdev_accept = 0\nnet.ipv4.udp_mem = 381582 508777 763164\nnet.ipv4.udp_rmem_min = 4096\nnet.ipv4.udp_wmem_min = 4096\nnet.ipv4.xfrm4_gc_thresh = 32768"
+  },
+  {
+   "path": "/proc/sys/fs",
+   "docs": [
+    "man5/proc_sys_fs.5",
+    "Documentation/admin-guide/sysctl/fs.rst"
+   ],
+   "text": "fs.aio-max-nr = 65536\nfs.aio-nr = 0\nfs.dentry-state = 417577 387851 45 0 4374 0\nfs.dir-notify-enable = 1\nfs.file-max = 9223372036854775807\nfs.file-nr = 10848 0 9223372036854775807\nfs.inode-nr = 417004 123343\nfs.inode-state = 417004 123343 0 0 0 0 0\nfs.lease-break-time = 45\nfs.leases-enable = 1\nfs.mount-max = 100000\nfs.nr_open = 1048576\nfs.overflowgid = 65534\nfs.overflowuid = 65534\nfs.pipe-max-size = 1048576\nfs.pipe-user-pages-hard = 0\nfs.pipe-user-pages-soft = 16384\nfs.protected_fifos = 1\nfs.protected_hardlinks = 1\nfs.protected_regular = 2\nfs.protected_symlinks = 1\nfs.suid_dumpable = 0"
+  },
+  {
+   "path": "/proc/self/status",
+   "docs": [
+    "man5/proc_pid_status.5"
+   ],
+   "text": "Name:\thead\nUmask:\t0022\nState:\tR (running)\nTgid:\t429373\nNgid:\t0\nPid:\t429373\nPPid:\t429372\nTracerPid:\t0\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nFDSize:\t64\nGroups:\t1000 \nNStgid:\t429373\nNSpid:\t429373\nNSpgid:\t429372\nNSsid:\t428594\nKthread:\t0\nVmPeak:\t    3024 kB\nVmSize:\t    3024 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1912 kB\nVmRSS:\t    1912 kB\nRssAnon:\t     116 kB\nRssFile:\t    1796 kB\nRssShmem:\t       0 kB\nVmData:\t     224 kB\nVmStk:\t     136 kB\nVmExe:\t      28 kB\nVmLib:\t    1588 kB\nVmPTE:\t      48 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t[REDACTED]\nSigPnd:\t[REDACTED]\nShdPnd:\t0000000000000000\nSigBlk:\t[REDACTED]\nSigIgn:\t[REDACTED]\nSigCgt:\t[REDACTED]\nCapInh:\t000001ffffffffff\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\t[REDACTED] vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\tff\nCpus_allowed_list:\t0-7\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0"
+  },
+  {
+   "path": "/proc/self/limits",
+   "docs": [
+    "man5/proc_pid_limits.5",
+    "man2/getrlimit.2"
+   ],
+   "text": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              unlimited            bytes     \nMax core file size        0                    0                    bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             63991                63991                processes \nMax open files            524288               524288               files     \nMax locked memory         8388608              8388608              bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       63991                63991                signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        "
+  },
+  {
+   "path": "/proc/self/maps",
+   "docs": [
+    "man5/proc_pid_maps.5"
+   ],
+   "text": "55ead7fb5000-55ead7fb7000 r--p 00000000 fe:10 8722                       /usr/bin/head\n55ead7fb7000-55ead7fbe000 r-xp 00002000 fe:10 8722                       /usr/bin/head\n55ead7fbe000-55ead7fc1000 r--p 00009000 fe:10 8722                       /usr/bin/head\n55ead7fc1000-55ead7fc2000 r--p 0000b000 fe:10 8722                       /usr/bin/head\n55ead7fc2000-55ead7fc3000 rw-p 0000c000 fe:10 8722                       /usr/bin/head\n55eafde5d000-55eafde7e000 rw-p 00000000 00:00 0                          [heap]\n7efe75b07000-7efe75b61000 r--p 00000000 fe:10 16211                      /usr/lib/locale/C.utf8/LC_CTYPE\n7efe75b61000-7efe75b62000 r--p 00000000 fe:10 16218                      /usr/lib/locale/C.utf8/LC_NUMERIC\n7efe75b62000-7efe75b63000 r--p 00000000 fe:10 16221                      /usr/lib/locale/C.utf8/LC_TIME\n7efe75b63000-7efe75b64000 r--p 00000000 fe:10 16210                      /usr/lib/locale/C.utf8/LC_COLLATE\n7efe75b64000-7efe75b65000 r--p 00000000 fe:10 16216                      /usr/lib/locale/C.utf8/LC_MONETARY\n7efe75b65000-7efe75b66000 r--p 00000000 fe:10 16215                      /usr/lib/locale/C.[REDACTED-BLOB]\n7efe75b66000-7efe75b67000 r--p 00000000 fe:10 16219                      /usr/lib/locale/C.utf8/LC_PAPER\n7efe75b67000-7efe75b6a000 rw-p 00000000 00:00 0 \n7efe75b6a000-7efe75b92000 r--p 00000000 fe:10 22626                      /usr/lib/x86_64-linux-gnu/libc.so.6\n7efe75b92000-7efe75cf5000 r-xp 00028000 fe:10 22626                      /usr/lib/x86_64-linux-gnu/libc.so.6\n7efe75cf5000-7efe75d4b000 r--p 0018b000 fe:10 22626                      /usr/lib/x86_64-linux-gnu/libc.so.6\n7efe75d4b000-7efe75d4f000 r--p 001e0000 fe:10 22626                      /usr/lib/x86_64-linux-gnu/libc.so.6\n7efe75d4f000-7efe75d51000 rw-p 001e4000 fe:10 22626                      /usr/lib/x86_64-linux-gnu/libc.so.6\n7efe75d51000-7efe75d5e000 rw-p 00000000 00:00 0 \n7efe75d5e000-7efe75d5f000 r--p 00000000 fe:10 16217                      /usr/lib/locale/C.utf8/LC_NAME\n7efe75d5f000-7efe75d60000 r--p 00000000 fe:10 16209                      /usr/lib/locale/C.utf8/LC_ADDRESS\n7efe75d60000-7efe75d61000 r--p 00000000 fe:10 16220                      /usr/lib/locale/C.utf8/LC_TELEPHONE\n7efe75d61000-7efe75d62000 r--p 00000000 fe:10 16213                      /usr/lib/locale/C.utf8/LC_MEASUREMENT\n7efe75d62000-7efe75d69000 r--s 00000000 fe:10 21953                      /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache\n7efe75d69000-7efe75d6a000 r--p 00000000 fe:10 16212                      /usr/lib/locale/C.utf8/LC_IDENTIFICATION\n7efe75d6a000-7efe75d6c000 rw-p 00000000 00:00 0 \n7efe75d6c000-7efe75d70000 r--p 00000000 00:00 0                          [vvar]\n7efe75d70000-7efe75d72000 r-xp 00000000 00:00 0                          [vdso]\n7efe75d72000-7efe75d73000 r--p 00000000 fe:10 22085                      /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7efe75d73000-7efe75d9b000 r-xp 00001000 fe:10 22085                      /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7efe75d9b000-7efe75da6000 r--p 00029000 fe:10 22085                      /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7efe75da6000-7efe75da8000 r--p 00034000 fe:10 22085                      /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7efe75da8000-7efe75da9000 rw-p 00036000 fe:10 22085                      /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2\n7efe75da9000-7efe75daa000 rw-p 00000000 00:00 0 \n7ffd544f9000-7ffd5451b000 rw-p 00000000 00:00 0                          [stack]\nffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]"
+  },
+  {
+   "path": "/proc/self/mountinfo",
+   "docs": [
+    "man5/proc_pid_mountinfo.5"
+   ],
+   "text": "193 166 254:16 / / rw,relatime - ext4 /dev/vdb rw\n194 193 0:46 / /proc rw,relatime - proc proc rw\n195 193 0:6 / /dev rw,relatime - devtmpfs devtmpfs rw,size=8191116k,nr_inodes=2047779,mode=755\n196 195 0:23 / /dev/shm rw,nosuid,nodev - tmpfs tmpfs rw\n197 195 0:24 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=5,mode=620,ptmxmode=000\n198 195 0:31 / /dev/hugepages rw,relatime - hugetlbfs hugetlbfs rw,pagesize=2M\n199 195 0:19 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw\n200 196 0:47 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw\n201 193 0:22 / /sys rw,relatime - sysfs sysfs rw\n202 201 0:7 / /sys/kernel/security rw,nosuid,nodev,noexec,relatime - securityfs securityfs rw\n203 201 0:20 / /sys/fs/selinux rw,nosuid,noexec,relatime - selinuxfs selinuxfs rw\n204 201 0:27 / /sys/fs/cgroup rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw,nsdelegate,memory_recursiveprot\n205 201 0:28 / /sys/fs/pstore rw,nosuid,nodev,noexec,relatime - pstore pstore rw\n206 201 0:29 / /sys/fs/bpf rw,nosuid,nodev,noexec,relatime - bpf bpf rw,mode=700\n268 201 0:12 / /sys/kernel/tracing rw,nosuid,nodev,noexec,relatime - tracefs tracefs rw\n269 201 0:8 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime - debugfs debugfs rw\n270 201 0:32 / /sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime - fusectl fusectl rw\n163 193 254:16 /var/lib/sand-box-runtime/allow /var/lib/sand-box-runtime/allow ro,relatime - ext4 /dev/vdb rw\n164 193 0:41 / /cursor/stores rw,nosuid,nodev,relatime - fuse.agent-store cursor-agent-store rw,user_id=0,group_id=0,default_permissions,allow_other"
+  },
+  {
+   "path": "/proc/self/cgroup",
+   "docs": [
+    "man5/proc_pid_cgroup.5",
+    "man7/cgroups.7"
+   ],
+   "text": "0::/agent"
+  },
+  {
+   "path": "/proc/net/dev",
+   "docs": [
+    "man5/proc_net.5"
+   ],
+   "text": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo: 5736230130 6105901    0    0    0     0          0         0 5736230130 6105901    0    0    0     0       0          0\nenp0s3: 51020820846 3764450    0    0    0     0          0         0 43267475348 2350799    0    0    0     0       0          0\ndocker0:       0       0    0    0    0     0          0         0        0       0    0    2    0     0       0          0"
+  },
+  {
+   "path": "/proc/net/tcp",
+   "docs": [
+    "man5/proc_net.5",
+    "Documentation/networking/proc_net_tcp.rst"
+   ],
+   "text": "  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     \n   0: [IPHEX]:17C0 [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000  1000        0 11702 1 00000000b1c4746f 100 0 0 10 0                     \n   1: [IPHEX]:17C1 [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000  1000        0 5485 1 0000000038507f34 100 0 0 10 0                      \n   2: [IPHEX]:170E [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000  1000        0 3494703 1 000000000f4caaf3 100 0 0 10 0                   \n   3: [IPHEX]:170C [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000  1000        0 13532 1 00000000abfa54b6 100 0 0 10 0                     \n   4: [IPHEX]:1710 [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000  1000        0 3626528 1 000000000485d614 100 0 0 10 0                   \n   5: [IPHEX]:172B [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000  1000        0 3222934 1 0000000022b223fd 100 0 0 10 0                   \n   6: [IPHEX]:0947 [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000     0        0 7454 1 000000002325c511 100 0 0 10 0                      \n   7: [IPHEX]:C384 [IPHEX]:0000 0A [IPHEX]:00000000 00:00000000 00000000     0        0 3222 1 0000000042b3222c 100 0 0 10 0                      "
+  },
+  {
+   "path": "/proc/net/sockstat",
+   "docs": [
+    "man5/proc_net.5"
+   ],
+   "text": "sockets: used 270\nTCP: inuse 19 orphan 0 tw 102 alloc 32 mem 51\nUDP: inuse 0 mem 771\nUDPLITE: inuse 0\nRAW: inuse 0\nFRAG: inuse 0 memory 0"
+  },
+  {
+   "path": "/proc/net/snmp",
+   "docs": [
+    "man5/proc_net.5"
+   ],
+   "text": "Ip: Forwarding DefaultTTL InReceives InHdrErrors InAddrErrors ForwDatagrams InUnknownProtos InDiscards InDelivers OutRequests OutDiscards OutNoRoutes ReasmTimeout ReasmReqds ReasmOKs ReasmFails FragOKs FragFails FragCreates OutTransmits\nIp: 1 127 9866798 0 0 0 0 0 9866787 8419569 0 0 0 0 0 0 0 0 0 8419568\nIcmp: InMsgs InErrors InCsumErrors InDestUnreachs InTimeExcds InParmProbs InSrcQuenchs InRedirects InEchos InEchoReps InTimestamps InTimestampReps InAddrMasks InAddrMaskReps OutMsgs OutErrors OutRateLimitGlobal OutRateLimitHost OutDestUnreachs OutTimeExcds OutParmProbs OutSrcQuenchs OutRedirects OutEchos OutEchoReps OutTimestamps OutTimestampReps OutAddrMasks OutAddrMaskReps\nIcmp: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\nTcp: RtoAlgorithm RtoMin RtoMax MaxConn ActiveOpens PassiveOpens AttemptFails EstabResets CurrEstab InSegs OutSegs RetransSegs InErrs OutRsts InCsumErrors\nTcp: 1 200 120000 -1 2715174 45296 2686611 146 7 9849695 37345010 3893 7 2690090 0\nUdp: InDatagrams NoPorts InErrors OutDatagrams RcvbufErrors SndbufErrors InCsumErrors IgnoredMulti MemErrors\nUdp: 17876 0 0 18457 0 0 0 0 0\nUdpLite: InDatagrams NoPorts InErrors OutDatagrams RcvbufErrors SndbufErrors InCsumErrors IgnoredMulti MemErrors\nUdpLite: 0 0 0 0 0 0 0 0 0"
+  },
+  {
+   "path": "/sys/fs/cgroup (cgroup v2 root)",
+   "docs": [
+    "Documentation/admin-guide/cgroup-v2.rst",
+    "man7/cgroups.7"
+   ],
+   "text": "/sys/fs/cgroup/cgroup.controllers = cpuset cpu io memory hugetlb pids\n/sys/fs/cgroup/cgroup.subtree_control = cpuset cpu io memory hugetlb pids\n/sys/fs/cgroup/cgroup.stat = nr_descendants 30 nr_subsys_cpuset 26 nr_subsys_cpu 26 nr_subsys_io 26 nr_subsys_memory 28 nr_subsys_perf_event 31 nr_subsys_hugetlb 26 nr_subsys_pids 28 nr_dying_descendants 31 nr_dying_subsys_cpuset 0 nr_dying_subsys_cpu 0 nr_dying_subsys_io 1 nr_dying_subsys_memory 31 nr_dying_subsys_perf_event 0 nr_dying_subsys_hugetlb 0 nr_dying_subsys_pids 0\n/sys/fs/cgroup/cgroup.max.depth = max\n/sys/fs/cgroup/cpu.stat = usage_usec 17825264556 user_usec 11850740374 system_usec 5974524181 nice_usec 16000 nr_periods 0 nr_throttled 0 throttled_usec 0 nr_bursts 0 burst_usec 0\n/sys/fs/cgroup/cpu.pressure = some avg10=0.00 avg60=0.04 avg300=0.25 total=213168699 full avg10=0.00 avg60=0.00 avg300=0.00 total=0\n/sys/fs/cgroup/memory.pressure = some avg10=0.00 avg60=0.03 avg300=0.16 total=39580930 full avg10=0.00 avg60=0.03 avg300=0.16 total=39046666\n/sys/fs/cgroup/io.pressure = some avg10=0.00 avg60=0.06 avg300=0.14 total=366562646 full avg10=0.00 avg60=0.06 avg300=0.14 total=354336729"
+  },
+  {
+   "path": "/sys/block/<disk>/queue",
+   "docs": [
+    "Documentation/ABI/stable/sysfs-block"
+   ],
+   "text": "/sys/block/vda/queue/scheduler = none [mq-deadline] kyber bfq\n/sys/block/vda/queue/nr_requests = 256\n/sys/block/vda/queue/rotational = 1\n/sys/block/vda/queue/read_ahead_kb = 128\n/sys/block/vda/queue/max_sectors_kb = 1280\n/sys/block/vda/queue/logical_block_size = 512\n/sys/block/vda/queue/physical_block_size = 512\n/sys/block/vda/queue/discard_max_bytes = 0\n/sys/block/vda/queue/write_cache = write through"
+  },
+  {
+   "path": "/sys/devices/system/cpu",
+   "docs": [
+    "Documentation/admin-guide/cputopology.rst",
+    "Documentation/admin-guide/pm/cpufreq.rst"
+   ],
+   "text": "/sys/devices/system/cpu/online = 0-7\n/sys/devices/system/cpu/possible = 0-7\n/sys/devices/system/cpu/present = 0-7\n/sys/devices/system/cpu/smt/active = 0"
+  },
+  {
+   "path": "/sys/kernel/mm/transparent_hugepage",
+   "docs": [
+    "Documentation/admin-guide/mm/transhuge.rst"
+   ],
+   "text": "/sys/kernel/mm/transparent_hugepage/enabled = always [madvise] never\n/sys/kernel/mm/transparent_hugepage/defrag = always defer defer+madvise [madvise] never\n/sys/kernel/mm/transparent_hugepage/shmem_enabled = always within_size advise [never] deny force"
+  },
+  {
+   "path": "/etc/os-release",
+   "docs": [],
+   "text": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.7\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\""
+  },
+  {
+   "path": "/etc/fstab",
+   "docs": [
+    "man5/proc_mounts.5"
+   ],
+   "text": "# UNCONFIGURED FSTAB FOR BASE SYSTEM"
+  },
+  {
+   "path": "/etc/passwd",
+   "docs": [
+    "man5/passwd.5"
+   ],
+   "text": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nbin:x:2:2:bin:/bin:/usr/sbin/nologin\nsys:x:3:3:sys:/dev:/usr/sbin/nologin\nsync:x:4:65534:sync:/bin:/bin/sync\ngames:x:5:60:games:/usr/games:/usr/sbin/nologin\nman:x:6:12:man:/var/cache/man:/usr/sbin/nologin\nlp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin\nmail:x:8:8:mail:/var/mail:/usr/sbin/nologin\nnews:x:9:9:news:/var/spool/news:/usr/sbin/nologin\nuucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin\nproxy:x:13:13:proxy:/bin:/usr/sbin/nologin\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\nbackup:x:34:34:backup:/var/backups:/usr/sbin/nologin\nlist:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin\nirc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin\n_apt:x:42:65534::/nonexistent:/usr/sbin/nologin\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin"
+  },
+  {
+   "path": "/etc/group",
+   "docs": [
+    "man5/group.5"
+   ],
+   "text": "root:x:0:\ndaemon:x:1:\nbin:x:2:\nsys:x:3:\nadm:x:4:\ntty:x:5:\ndisk:x:6:\nlp:x:7:\nmail:x:8:\nnews:x:9:\nuucp:x:10:\nman:x:12:\nproxy:x:13:\nkmem:x:15:\ndialout:x:20:\nfax:x:21:\nvoice:x:22:\ncdrom:x:24:\nfloppy:x:25:\ntape:x:26:\nsudo:x:27:\naudio:x:29:\ndip:x:30:\nwww-data:x:33:\nbackup:x:34:\noperator:x:37:\nlist:x:38:\nirc:x:39:\nsrc:x:40:\nshadow:x:42:\nutmp:x:43:\nvideo:x:44:\nsasl:x:45:\nplugdev:x:46:\nstaff:x:50:\ngames:x:60:\nnogroup:x:65534:"
+  },
+  {
+   "path": "/etc/nsswitch.conf",
+   "docs": [
+    "man5/nsswitch.conf.5"
+   ],
+   "text": "# /etc/nsswitch.conf\n#\n# Example configuration of GNU Name Service Switch functionality.\n# If you have the `glibc-doc-reference' and `info' packages installed, try:\n# `info libc \"Name Service Switch\"' for information about this file.\n\npasswd:         [REDACTED]\ngroup:          files\nshadow:         files\ngshadow:        files\n\nhosts:          files dns\nnetworks:       files\n\nprotocols:      db files\nservices:       db files\nethers:         db files\nrpc:            db files\n\nnetgroup:       nis"
+  },
+  {
+   "path": "/etc/hosts",
+   "docs": [
+    "man5/hosts.5"
+   ],
+   "text": "[IP]\tlocalhost\n[IPV6]\tlocalhost ip6-localhost ip6-loopback\n[IPV6]\tip6-localnet\n[IPV6]\tip6-mcastprefix\n[IPV6]\tip6-allnodes\n[IPV6]\tip6-allrouters\n[IP]\t[HOST]"
+  },
+  {
+   "path": "/etc/services",
+   "docs": [
+    "man5/services.5"
+   ],
+   "text": "tcpmux\t\t1/tcp\t\t\t\t# TCP port service multiplexer\necho\t\t7/tcp\necho\t\t7/udp\ndiscard\t\t9/tcp\t\tsink null\ndiscard\t\t9/udp\t\tsink null\nsystat\t\t11/tcp\t\tusers\ndaytime\t\t13/tcp\ndaytime\t\t13/udp\nnetstat\t\t15/tcp\nqotd\t\t17/tcp\t\tquote\nchargen\t\t19/tcp\t\tttytst source\nchargen\t\t19/udp\t\tttytst source\nftp-data\t20/tcp\nftp\t\t21/tcp\nfsp\t\t21/udp\t\tfspd\nssh\t\t22/tcp\t\t\t\t# SSH Remote Login Protocol\ntelnet\t\t23/tcp\nsmtp\t\t25/tcp\t\tmail\ntime\t\t37/tcp\t\ttimserver\ntime\t\t37/udp\t\ttimserver\nwhois\t\t43/tcp\t\tnicname\ntacacs\t\t49/tcp\t\t\t\t# Login Host Protocol (TACACS)\ntacacs\t\t49/udp\ndomain\t\t53/tcp\t\t\t\t# Domain Name Server\ndomain\t\t53/udp\nbootps\t\t67/udp\nbootpc\t\t68/udp\ntftp\t\t69/udp\ngopher\t\t70/tcp\t\t\t\t# Internet Gopher\nfinger\t\t79/tcp\nhttp\t\t80/tcp\t\twww\t\t# WorldWideWeb HTTP\nkerberos\t88/tcp\t\tkerberos5 krb5 kerberos-sec\t# Kerberos v5\nkerberos\t88/udp\t\tkerberos5 krb5 kerberos-sec\t# Kerberos v5\niso-tsap\t102/tcp\t\ttsap\t\t# part of ISODE\nacr-nema\t104/tcp\t\tdicom\t\t# Digital Imag. & Comm. 300\npop3\t\t110/tcp\t\tpop-3\t\t# POP version 3\nsunrpc\t\t111/tcp\t\tportmapper\t# RPC 4.0 portmapper\nsunrpc\t\t111/udp\t\tportmapper\nauth\t\t113/tcp\t\tauthentication tap ident\nnntp\t\t119/tcp\t\treadnews untp\t# USENET News Transfer Protocol\nntp\t\t123/udp\t\t\t\t# Network Time Protocol\nepmap\t\t135/tcp\t\tloc-srv\t\t# DCE endpoint resolution\nnetbios-ns\t137/udp\t\t\t\t# NETBIOS Name Service\nnetbios-dgm\t138/udp\t\t\t\t# NETBIOS Datagram Service\nnetbios-ssn\t139/tcp\t\t\t\t# NETBIOS session service\nimap2\t\t143/tcp\t\timap\t\t# Interim Mail Access P 2 and 4\nsnmp\t\t161/tcp\t\t\t\t# Simple Net Mgmt Protocol\nsnmp\t\t161/udp\nsnmp-trap\t162/tcp\t\tsnmptrap\t# Traps for SNMP\nsnmp-trap\t162/udp\t\tsnmptrap\ncmip-man\t163/tcp\t\t\t\t# ISO mgmt over IP (CMOT)\ncmip-man\t163/udp\ncmip-agent\t164/tcp\ncmip-agent\t164/udp\nmailq\t\t174/tcp\t\t\t# Mailer transport queue for Zmailer\nxdmcp\t\t177/udp\t\t\t# X Display Manager Control Protocol\nbgp\t\t179/tcp\t\t\t\t# Border Gateway Protocol\nsmux\t\t199/tcp\t\t\t\t# SNMP Unix Multiplexer\nqmtp\t\t209/tcp\t\t\t\t# Quick Mail Transfer Protocol\nz3950\t\t210/tcp\t\twais\t\t# NISO Z39.50 database\nipx\t\t213/udp\t\t\t\t# IPX [RFC1234]\nptp-event\t319/udp\nptp-general\t320/udp\npawserv\t\t345/tcp\t\t\t\t# Perf Analysis Workbench\nzserv\t\t346/tcp\t\t\t\t# Zebra server\nrpc2portmap\t369/tcp\nrpc2portmap\t369/udp\t\t\t\t# Coda portmapper\ncodaauth2\t370/tcp\ncodaauth2\t370/udp\t\t\t\t# Coda authentication server\nclearcase\t371/udp\t\tClearcase\nldap\t\t389/tcp\t\t\t# Lightweight Directory Access Protocol\nldap\t\t389/udp\nsvrloc\t\t427/tcp\t\t\t\t# Server Location\nsvrloc\t\t427/udp\nhttps\t\t443/tcp\t\t\t\t# http protocol over TLS/SSL\nhttps\t\t443/udp\t\t\t\t# HTTP/3\nsnpp\t\t444/tcp\t\t\t\t# Simple Network Paging Protocol\nmicrosoft-ds\t445/tcp\t\t\t\t# Microsoft Naked CIFS\nkpasswd\t\t464/tcp\nkpasswd\t\t464/udp\n... (242 more lines)"
+  },
+  {
+   "path": "/etc/protocols",
+   "docs": [
+    "man5/protocols.5"
+   ],
+   "text": "ip\t0\tIP\t\t# internet protocol, pseudo protocol number\nhopopt\t0\tHOPOPT\t\t# IPv6 Hop-by-Hop Option [RFC1883]\nicmp\t1\tICMP\t\t# internet control message protocol\nigmp\t2\tIGMP\t\t# Internet Group Management\nggp\t3\tGGP\t\t# gateway-gateway protocol\nipencap\t4\tIP-ENCAP\t# IP encapsulated in IP (officially ``IP'')\nst\t5\tST\t\t# ST datagram mode\ntcp\t6\tTCP\t\t# transmission control protocol\negp\t8\tEGP\t\t# exterior gateway protocol\nigp\t9\tIGP\t\t# any private interior gateway (Cisco)\npup\t12\tPUP\t\t# PARC universal packet protocol\nudp\t17\tUDP\t\t# user datagram protocol\nhmp\t20\tHMP\t\t# host monitoring protocol\nxns-idp\t22\tXNS-IDP\t\t# Xerox NS IDP\nrdp\t27\tRDP\t\t# \"reliable datagram\" protocol\niso-tp4\t29\tISO-TP4\t\t# ISO Transport Protocol class 4 [RFC905]\ndccp\t33\tDCCP\t\t# Datagram Congestion Control Prot. [RFC4340]\nxtp\t36\tXTP\t\t# Xpress Transfer Protocol\nddp\t37\tDDP\t\t# Datagram Delivery Protocol\nidpr-cmtp 38\tIDPR-CMTP\t# IDPR Control Message Transport\nipv6\t41\tIPv6\t\t# Internet Protocol, version 6\nipv6-route 43\tIPv6-Route\t# Routing Header for IPv6\nipv6-frag 44\tIPv6-Frag\t# Fragment Header for IPv6\nidrp\t45\tIDRP\t\t# Inter-Domain Routing Protocol\nrsvp\t46\tRSVP\t\t# Reservation Protocol\ngre\t47\tGRE\t\t# General Routing Encapsulation\nesp\t50\tIPSEC-ESP\t# Encap Security Payload [RFC2406]\nah\t51\tIPSEC-AH\t# Authentication Header [RFC2402]\nskip\t57\tSKIP\t\t# SKIP\nipv6-icmp 58\tIPv6-ICMP\t# ICMP for IPv6\nipv6-nonxt 59\tIPv6-NoNxt\t# No Next Header for IPv6\nipv6-opts 60\tIPv6-Opts\t# Destination Options for IPv6\nrspf\t73\tRSPF CPHB\t# Radio Shortest Path First (officially CPHB)\nvmtp\t81\tVMTP\t\t# Versatile Message Transport\neigrp\t88\tEIGRP\t\t# Enhanced Interior Routing Protocol (Cisco)\nospf\t89\tOSPFIGP\t\t# Open Shortest Path First IGP\nax.25\t93\tAX.25\t\t# AX.25 frames\nipip\t94\tIPIP\t\t# IP-within-IP Encapsulation Protocol\netherip\t97\tETHERIP\t\t# Ethernet-within-IP Encapsulation [RFC3378]\nencap\t98\tENCAP\t\t# Yet Another IP encapsulation [RFC1241]\npim\t103\tPIM\t\t# Protocol Independent Multicast\nipcomp\t108\tIPCOMP\t\t# IP Payload Compression Protocol\nvrrp\t112\tVRRP\t\t# Virtual Router Redundancy Protocol [RFC5798]\nl2tp\t115\tL2TP\t\t# Layer Two Tunneling Protocol [RFC2661]\nisis\t124\tISIS\t\t# IS-IS over IPv4\nsctp\t132\tSCTP\t\t# Stream Control Transmission Protocol\nfc\t133\tFC\t\t# Fibre Channel\nmobility-header 135 Mobility-Header # Mobility Support for IPv6 [RFC3775]\nudplite\t136\tUDPLite\t\t# UDP-Lite [RFC3828]\nmpls-in-ip 137\tMPLS-in-IP\t# MPLS-in-IP [RFC4023]\nmanet\t138\t\t\t# MANET Protocols [RFC5498]\nhip\t139\tHIP\t\t# Host Identity Protocol\nshim6\t140\tShim6\t\t# Shim6 Protocol [RFC5533]\nwesp\t141\tWESP\t\t# Wrapped Encapsulating Security Payload\nrohc\t142\tROHC\t\t# Robust Header Compression\nethernet 143\tEthernet\t# Ethernet encapsulation for SRv6 [RFC8986]\nmptcp\t262\tMPTCP\t\t# Multipath TCP connection"
+  },
+  {
+   "path": "/etc/shells",
+   "docs": [
+    "man5/shells.5"
+   ],
+   "text": "# /etc/shells: valid login shells\n/bin/sh\n/usr/bin/sh\n/bin/bash\n/usr/bin/bash\n/bin/rbash\n/usr/bin/rbash\n/usr/bin/dash\n/usr/bin/tmux"
+  },
+  {
+   "path": "/etc/login.defs",
+   "docs": [],
+   "text": "MAIL_DIR        /var/mail\nLOG_UNKFAIL_ENAB\tno\nLOG_OK_LOGINS\t\tno\nHUSHLOGIN_FILE\t.hushlogin\nENV_SUPATH\tPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nENV_PATH\tPATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games\nTTYPERM\t\t0600\nERASECHAR\t0177\nKILLCHAR\t025\nHOME_MODE\t0700\nPASS_MAX_DAYS\t99999\nPASS_MIN_DAYS\t0\nPASS_WARN_AGE\t7\nUID_MIN\t\t\t 1000\nUID_MAX\t\t\t60000\nSUB_UID_MIN\t\t   100000\nSUB_UID_MAX\t\t600100000\nSUB_UID_COUNT\t\t    65536\nGID_MIN\t\t\t 1000\nGID_MAX\t\t\t60000\nSUB_GID_MIN\t\t   100000\nSUB_GID_MAX\t\t600100000\nSUB_GID_COUNT\t\t    65536\nLOGIN_RETRIES\t\t5\nLOGIN_TIMEOUT\t\t60\nCHFN_RESTRICT\t\trwh\nENCRYPT_METHOD YESCRYPT\nDEFAULT_HOME\tyes\nNONEXISTENT\t/nonexistent\nUSERGROUPS_ENAB yes"
+  },
+  {
+   "path": "/etc/security/limits.conf",
+   "docs": [
+    "man2/getrlimit.2"
+   ],
+   "text": "# /etc/security/limits.conf\n#\n#This file sets the resource limits for the users logged in via PAM.\n#It does not affect resource limits of the system services.\n#\n#Also note that configuration files in /etc/security/limits.d directory,\n#which are read in alphabetical order, override the settings in this\n#file in case the domain is the same or more specific.\n#That means, for example, that setting a limit for wildcard domain here\n#can be overridden with a wildcard setting in a config file in the\n#subdirectory, but a user specific setting here can be overridden only\n#with a user specific setting in the subdirectory.\n#\n#Each line describes a limit for a user in the form:\n#\n#<domain>        <type>  <item>  <value>\n#\n#Where:\n#<domain> can be:\n#        - a user name\n#        - a group name, with @group syntax\n#        - the wildcard *, for default entry\n#        - the wildcard %, can be also used with %group syntax,\n#                 for maxlogin limit\n#        - NOTE: group and wildcard limits are not applied to root.\n#          To apply a limit to the root user, <domain> must be\n#          the literal username root.\n#\n#<type> can have the two values:\n#        - \"soft\" for enforcing the soft limits\n#        - \"hard\" for enforcing hard limits\n#\n#<item> can be one of the following:\n#        - core - limits the core file size (KB)\n#        - data - max data size (KB)\n#        - fsize - maximum filesize (KB)\n#        - memlock - max locked-in-memory address space (KB)\n#        - nofile - max number of open file descriptors\n#        - rss - max resident set size (KB)\n#        - stack - max stack size (KB)\n#        - cpu - max CPU time (MIN)\n#        - nproc - max number of processes\n#        - as - address space limit (KB)\n#        - maxlogins - max number of logins for this user\n#        - maxsyslogins - max number of logins on the system\n#        - priority - the priority to run user process with\n#        - locks - max number of file locks the user can hold\n#        - sigpending - max number of pending signals\n#        - msgqueue - max memory used by POSIX message queues (bytes)\n#        - nice - max nice priority allowed to raise to values: [-20, 19]\n#        - rtprio - max realtime priority\n#        - chroot - change root to directory (Debian-specific)\n#\n#<domain>      <type>  <item>         <value>\n#\n\n#*               soft    core            0\n#root            hard    core            100000\n#*               hard    rss             10000\n#@student        hard    nproc           20\n#@faculty        soft    nproc           20\n#@faculty        hard    nproc           50\n#ftp             hard    nproc           0\n#ftp             -       chroot          /ftp\n#@student        -       maxlogins       4\n\n# End of file"
+  },
+  {
+   "path": "/etc/sysctl.d/README.sysctl",
+   "docs": [
+    "man5/proc_sys.5"
+   ],
+   "text": "Files located in this directory can set kernel parameters using the\nsysctl(8) or systemd-sysctl(8) tool which is typically run with a\nunit/init file started during the boot sequence.\n\nFor details regarding the configuration files refer to\nsysctl.d(5) or sysctl.conf(5)"
+  },
+  {
+   "path": "/etc/ld.so.conf",
+   "docs": [
+    "man8/ld.so.8",
+    "man8/ldconfig.8"
+   ],
+   "text": "include /etc/ld.so.conf.d/*.conf"
+  },
+  {
+   "path": "/etc/ld.so.conf.d/libc.conf",
+   "docs": [
+    "man8/ld.so.8",
+    "man8/ldconfig.8"
+   ],
+   "text": "# libc default configuration\n/usr/local/lib"
+  },
+  {
+   "path": "/etc/ld.so.conf.d/x86_64-linux-gnu.conf",
+   "docs": [
+    "man8/ld.so.8",
+    "man8/ldconfig.8"
+   ],
+   "text": "# Multiarch support\n/usr/local/lib/x86_64-linux-gnu\n/lib/x86_64-linux-gnu\n/usr/lib/x86_64-linux-gnu"
+  },
+  {
+   "path": "/etc/resolv.conf",
+   "docs": [
+    "man5/resolv.conf.5"
+   ],
+   "text": "nameserver [IP]"
+  }
+ ]
+}

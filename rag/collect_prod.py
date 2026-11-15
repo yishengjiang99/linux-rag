@@ -15,6 +15,7 @@ import shlex
 import subprocess
 import sys
 
+from rag import snapshot
 from rag.chunk import text_chunks
 from rag.index import write_db
 from rag.redact import path_allowed, redact
@@ -73,6 +74,8 @@ def collect(run):
             add(kind, f, run(read), lines=80 if kind != "nginx error log" else 60)
     for kind, path, cmd, access in LOG_CMDS:
         add(kind, path, run(cmd), access=access)
+    # /proc, /sys, /etc snapshot (same set as the public sample; redacted inside snapshot.collect)
+    chunks += snapshot.to_chunks(snapshot.collect(run, public=False), "prod")
     return chunks
 
 

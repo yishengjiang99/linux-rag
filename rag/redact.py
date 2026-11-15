@@ -52,7 +52,7 @@ _RULES = [
     (re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "[EMAIL]"),
     # IPv6 (full, compressed, with optional zone) before IPv4
     (re.compile(r"(?i)(?<![\w:.])(?:[0-9a-f]{1,4}:){7}[0-9a-f]{1,4}(?![0-9a-f:])"), "[IPV6]"),
-    (re.compile(r"(?i)(?<![\w:.])(?:(?:[0-9a-f]{1,4}:){1,7}:|(?:[0-9a-f]{1,4}:){1,6}(?::[0-9a-f]{1,4}){1,6}"
+    (re.compile(r"(?i)(?<![\w:.])(?:(?:[0-9a-f]{1,4}:){2,7}:(?![/\w])|(?:[0-9a-f]{1,4}:){1,6}(?::[0-9a-f]{1,4}){1,6}"
                 r"|:(?::[0-9a-f]{1,4}){1,7})(?:%\w+)?(?![0-9a-f:])"), "[IPV6]"),
     # IPv4 (optionally with /cidr or :port kept outside)
     (re.compile(r"(?<![\d.])(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)(?![\d.])"), "[IP]"),
@@ -105,7 +105,10 @@ def redact(text, access_log=False):
 
 # Files that must never be read, let alone indexed.
 _DENY = re.compile(r"(?i)(\.env(\.|$)|/\.env|\.pem$|\.key$|\.crt$|\.p12$|\.pfx$|\.jks$|id_rsa|id_ed25519|"
-                   r"htpasswd|/letsencrypt/|/ssl/private|secret|credential|password|token|shadow|gbk-composer\.env)")
+                   r"htpasswd|/letsencrypt/|/ssl/private|secret|credential|password|token|shadow|gbk-composer\.env|sudoers|"
+                   r"ssh_host_|authorized_keys|known_hosts|\.netrc|/etc/ssl/|/etc/pki/|keyring|\.gnupg|opasswd|"
+                   r"/environ$|/proc/(?:self|thread-self|\d+)(?:/task/\d+)?/(?:mem|environ|cmdline|auxv|pagemap|stack|syscall)$|"
+                   r"/proc/(?:self|thread-self|\d+)/(?:fd|fdinfo|map_files)/)")
 
 
 def path_allowed(path):

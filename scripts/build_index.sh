@@ -42,6 +42,7 @@ main() {
   python3 -m rag.index man "$corpora/man-pages" "$data/man.db"
   python3 -m rag.index kdocs "$corpora/linux" "$data/kdocs.db"
   python3 -m rag.index src "$corpora/linux" "$data/src.db"
+  python3 -m rag.index sys samples/sys_snapshot.json "$data/sys.db"
 
   cat > "$data/meta.json" <<JSON
 {"linux_commit": "$(git -C "$corpora/linux" rev-parse HEAD)",

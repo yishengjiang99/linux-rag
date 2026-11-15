@@ -17,7 +17,7 @@
   #sources { font-size: 13px; padding-left: 20px; }
   #sources li { word-break: break-all; }
   .tag { font-size: 11px; color: #fff; background: #777; border-radius: 3px; padding: 0 4px; margin-right: 4px; }
-  .tag.prod { background: #b00; } .tag.upload { background: #06c; }
+  .tag.prod { background: #b00; } .tag.upload { background: #06c; } .tag.sys { background: #2a7a2a; }
   .muted { color: #666; font-size: 13px; }
   details { margin-top: 18px; } fieldset { border: 1px solid #ddd; margin: 8px 0; }
 </style>
@@ -36,6 +36,9 @@
   <button type="button">Explain this: BUG: unable to handle page fault for address</button>
   <button type="button">What does SO_REUSEPORT do and where is it implemented?</button>
   <button type="button">Where does the kernel copy argv/envp during execve?</button>
+  <button type="button">What does Dirty in /proc/meminfo mean?</button>
+  <button type="button">How do I read /proc/pressure/memory?</button>
+  <button type="button">What does vm.swappiness do?</button>
 </div>
 <button id="ask" type="button">Ask</button> <span id="status" class="muted"></span>
 <div id="answer" aria-live="polite"></div>
@@ -57,7 +60,7 @@
   <span id="adminstate" class="muted"></span></fieldset>
 </details>
 
-<p class="muted">Sources: Linux kernel Documentation/ and source (include/uapi, kernel, fs, mm, net/core, x86 syscall tables), man-pages sections 2–8. Limited questions per day per visitor. <a href="https://github.com/yishengjiang99/linux-rag">Code</a>.</p>
+<p class="muted">Sources: Linux kernel Documentation/ and source (include/uapi, kernel, fs, mm, net/core, x86 syscall tables), man-pages sections 2–8, and a redacted sample snapshot of /proc, /sys and /etc from a Linux box. Limited questions per day per visitor. <a href="https://github.com/yishengjiang99/linux-rag">Code</a>.</p>
 <script src="app.js"></script>
 </body>
 </html>

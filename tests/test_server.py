@@ -86,6 +86,8 @@ class ServerTest(unittest.TestCase):
         st, d, _, _ = self.req("POST", "/rag/api/ask", {"q": "nginx 502 upstream"}, cookie=ck, ip=ip)
         self.assertIn("SECRETPRODLINE", PROMPTS[-1])
         self.assertEqual(d["sources"][0]["corpus"], "prod")
+        # prod comes first, so a full context budget of public hits can't crowd it out
+        self.assertLess(PROMPTS[-1].index("SECRETPRODLINE"), PROMPTS[-1].index("Question:"))
         self.req("POST", "/rag/api/logout", {}, cookie=ck, ip=ip)
         self.req("POST", "/rag/api/ask", {"q": "nginx 502 upstream"}, cookie=ck, ip=ip)
         self.assertNotIn("SECRETPRODLINE", PROMPTS[-1])

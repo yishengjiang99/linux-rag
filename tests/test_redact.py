@@ -69,11 +69,19 @@ class RedactTest(unittest.TestCase):
         self.assertIn("location /api", out)
         self.assertIn("proxy_pass http://[IP]:3001", out)
 
+    def test_cgroup_path_not_ipv6(self):
+        self.assertEqual(redact("0::/agent"), "0::/agent")
+        self.assertIn("[IPV6]", redact("addr 2001:db8:: and fe80::1"))
+
     def test_path_denylist(self):
-        for p in ("/etc/gbk-composer.env", "/srv/app/.env", "/srv/app/.env.production", "/etc/ssl/private/x.key",
+        for p in ("/etc/shadow", "/etc/gshadow", "/etc/sudoers", "/etc/sudoers.d/90-cloud", "/etc/ssh/ssh_host_rsa_key",
+                  "/root/.ssh/authorized_keys", "/proc/self/environ", "/proc/1/cmdline", "/proc/self/mem",
+                  "/proc/1/fd/3", "/etc/security/opasswd", "/etc/ssl/private/k", "/root/.netrc","/etc/gbk-composer.env", "/srv/app/.env", "/srv/app/.env.production", "/etc/ssl/private/x.key",
                   "/etc/letsencrypt/live/a/privkey.pem", "/etc/nginx/.htpasswd", "/root/.ssh/id_ed25519"):
             self.assertFalse(path_allowed(p), p)
-        for p in ("/etc/nginx/sites-available/finalcut", "/etc/systemd/system/finalcut.service", "/var/log/nginx/error.log"):
+        for p in ("/etc/nginx/sites-available/finalcut", "/etc/systemd/system/finalcut.service", "/var/log/nginx/error.log",
+                  "/proc/cmdline", "/proc/pressure/memory", "/proc/self/maps", "/proc/meminfo", "/etc/passwd",
+                  "/etc/ssh/sshd_config", "/proc/sys/vm/swappiness", "/etc/systemd/system/gbk-composer.service"):
             self.assertTrue(path_allowed(p), p)
 
     def test_any_key_short_value(self):

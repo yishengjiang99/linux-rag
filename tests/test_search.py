@@ -70,8 +70,11 @@ class SearchTest(unittest.TestCase):
 
     def test_query_building(self):
         self.assertEqual(fts_query("What does EPOLLEXCLUSIVE do?"), '"epollexclusive"')
-        self.assertEqual(fts_query('a "quoted" OR NEAR('), '"quoted" OR "near"')
+        self.assertEqual(fts_query('a "quoted" OR NEAR('), '"quoted" OR "near" OR "quoted_near"')
+        self.assertIn('"transparent_hugepage"', fts_query("is transparent hugepage enabled"))
         self.assertEqual(fts_query("the of"), "")
+        self.assertEqual(fts_query("Dirty in /proc/meminfo"), '"proc_meminfo" OR "dirty" OR "proc" OR "meminfo" OR "dirty_proc"')
+        self.assertTrue(fts_query("/proc/sys/vm/swappiness").startswith('"proc_sys_vm_swappiness" OR "proc_sys_vm"'))
 
     def test_finds_identifiers(self):
         hits = self.ix.search("what does EPOLLEXCLUSIVE do")
@@ -82,7 +85,8 @@ class SearchTest(unittest.TestCase):
     def test_prod_is_admin_only(self):
         q = "upstream connection refused 502"
         self.assertFalse([h for h in self.ix.search(q) if h["corpus"] == "prod"])
-        self.assertTrue([h for h in self.ix.search(q, admin=True) if h["corpus"] == "prod"])
+        admin_hits = self.ix.search(q, admin=True)
+        self.assertEqual(admin_hits[0]["corpus"], "prod")
 
     def test_uploads(self):
         db = upload_db()
