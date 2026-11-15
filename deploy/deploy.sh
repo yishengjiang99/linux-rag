@@ -8,6 +8,9 @@ set -euo pipefail
 TARGET="${1:?usage: deploy/deploy.sh user@host}"
 cd "$(dirname "$0")/.."
 
+command -v rsync >/dev/null || { echo "deploy.sh needs rsync on this machine (apt install rsync / brew install rsync)" >&2; exit 1; }
+ssh "$TARGET" 'command -v rsync >/dev/null' || { echo "rsync is missing on $TARGET (apt install rsync there), or ssh failed" >&2; exit 1; }
+
 python3 -m unittest discover -s tests -t . >/dev/null
 
 rsync -az --exclude .git --exclude data --exclude corpora --exclude '__pycache__' ./ "$TARGET:/opt/linux-rag/"

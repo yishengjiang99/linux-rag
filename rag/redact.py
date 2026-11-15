@@ -11,6 +11,11 @@ _SENSITIVE_KEY = (r"(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|apik
                   r"private[_-]?key|client[_-]?secret|auth|credential|cred|salt|session|cookie|signature|sig|dsn|"
                   r"database_url|db_url|webhook)")
 
+def _phone(m, min_digits):
+    digits = re.sub(r"\D", "", m.group(0))
+    return "[PHONE]" if min_digits <= len(digits) <= 15 else m.group(0)
+
+
 _RULES = [
     # PEM / key blocks
     (re.compile(r"-----BEGIN [A-Z0-9 ]*(?:PRIVATE KEY|CERTIFICATE|KEY)[A-Z ]*-----.*?-----END [A-Z0-9 ]+-----", re.S),
@@ -27,6 +32,9 @@ _RULES = [
     # key=value / key: value / KEY="value" with a sensitive key name (env lines, systemd Environment=, json)
     (re.compile(r"(?i)([\"']?[A-Za-z0-9_.-]*" + _SENSITIVE_KEY + r"[A-Za-z0-9_.-]*[\"']?\s*[=:]\s*)"
                 r"(\"[^\"\n]*\"|'[^'\n]*'|[^\s,;&\"'}]+)"), r"\1" + R),
+    # any key whose last word is KEY/SECRET/TOKEN/PASSWORD/... (FOO_KEY=x, deploy.token: y), any value length
+    (re.compile(r"(?i)(?<![A-Za-z0-9])((?:[A-Za-z0-9]+[_.-])*(?:key|secret|token|password|passwd|pass|pwd|"
+                r"apikey|credentials?)s?[\"']?\s*[=:]\s*)(\"[^\"\n]*\"|'[^'\n]*'|[^\s,;&\"'}]+)"), r"\1" + R),
     # same, inside URL query strings
     (re.compile(r"(?i)([?&][A-Za-z0-9_.-]*(?:" + _SENSITIVE_KEY + r"|code|key|email|state|ticket|jwt)[A-Za-z0-9_.-]*=)[^&\s\"]+"),
      r"\1" + R),
@@ -48,6 +56,10 @@ _RULES = [
                 r"|:(?::[0-9a-f]{1,4}){1,7})(?:%\w+)?(?![0-9a-f:])"), "[IPV6]"),
     # IPv4 (optionally with /cidr or :port kept outside)
     (re.compile(r"(?<![\d.])(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)(?![\d.])"), "[IP]"),
+    # phone numbers (after IPs; candidates are checked in _phone so dates, versions, ports are kept)
+    (re.compile(r"(?<![\w+.:/-])\+\d{1,3}(?:[ .-]?\(?\d{1,4}\)?){2,7}(?![\w.:/-])"), lambda m: _phone(m, 8)),
+    (re.compile(r"(?<![\w+.:/-])(?:1[ .-])?(?:\([2-9]\d{2}\) ?|[2-9]\d{2}[ .-])[2-9]\d{2}[ .-]\d{4}(?![\w.:/-])"),
+     lambda m: _phone(m, 10)),
     # MAC addresses
     (re.compile(r"(?i)\b(?:[0-9a-f]{2}:){5}[0-9a-f]{2}\b"), "[MAC]"),
     # long hex / base64 blobs (hashes, session ids, raw keys)

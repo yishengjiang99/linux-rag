@@ -76,6 +76,35 @@ class RedactTest(unittest.TestCase):
         for p in ("/etc/nginx/sites-available/finalcut", "/etc/systemd/system/finalcut.service", "/var/log/nginx/error.log"):
             self.assertTrue(path_allowed(p), p)
 
+    def test_any_key_short_value(self):
+        for raw, secret in [("DEPLOY_KEY=ab", "=ab"), ("STRIPE_KEY=x", "=x"), ("APP_SECRET=1", "=1"),
+                            ("GH_TOKEN=t0", "=t0"), ("DB_PASSWORD=pw", "=pw"), ("ADMIN_PASS=a", "=a"),
+                            ("Environment=SIGNING_KEY=k1", "=k1"), ("export MY_TOKEN='z'", "'z'"),
+                            ('deploy.key: abc', ": abc"), ('{"SECRET": "s"}', '"s"'), ("key=v", "=v")]:
+            out = redact(raw)
+            self.assertNotIn(secret, out, raw)
+            self.assertIn("[REDACTED]", out, raw)
+
+    def test_key_names_not_overmatched(self):
+        for keep in ("monkey=3", "KeyringMode=private", "turnkey=yes", "ssl_certificate_key /etc/x.pem;",
+                     "keepalive_timeout 65;", "hotkeys=on"):
+            self.assertEqual(redact(keep), keep)
+
+    def test_phone_numbers(self):
+        for raw in ("call +1 415 555 0134 now", "tel +44 20 7946 0958", "+49-30-901820", "+861012345678",
+                    "(415) 555-0134", "415-555-0134", "415.555.0134", "1-800-555-0199", "+33 (0)1 23 45 67 89"):
+            out = redact(raw)
+            self.assertIn("[PHONE]", out, raw)
+            self.assertFalse(any(ch.isdigit() for ch in out.replace("[PHONE]", "")), (raw, out))
+
+    def test_phone_no_false_positives(self):
+        for keep in ("2026-11-14 18:40:00", "[14/Nov/2026:10:00:00 +0000]", "2026-11-14T18:40:00+08:00",
+                     "nginx[148404]: pid 148404#148404: *78895", "nginx/1.18.0 python 3.10.12 kernel 5.15.0-202-generic",
+                     "listen 443 ssl; proxy_pass http://localhost:8795;", "293\tcommon\tpipe2\tsys_pipe2",
+                     "uptime 1731638400 epoch", "bytes 1048576 2097152", "version 123.456.7890",
+                     "GET /api/x/415-555-0134-abc HTTP/1.1", "id=550e8400-e29b-41d4", "size 4155550134"):
+            self.assertEqual(redact(keep), keep)
+
 
 if __name__ == "__main__":
     unittest.main()
