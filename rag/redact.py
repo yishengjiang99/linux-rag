@@ -7,7 +7,7 @@ import re
 
 R = "[REDACTED]"
 
-_SENSITIVE_KEY = (r"(?:password|passwd|passphrase|(?<![a-z])pass|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|"
+_SENSITIVE_KEY = (r"(?:password|passwd|passphrase|(?<!by)(?<!com)(?<!sur)pass|pwd|secret|token|api[_-]?key|apikey|access[_-]?key|"
                   r"private[_-]?key|client[_-]?secret|auth|credential|cred|salt|session|cookie|signature|sig|dsn|"
                   r"database_url|db_url|webhook)")
 

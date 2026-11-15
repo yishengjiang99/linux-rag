@@ -72,8 +72,12 @@ class RedactTest(unittest.TestCase):
     def test_bypass_is_not_a_password(self):
         line = "Speculation_Store_Bypass:\tthread vulnerable"
         self.assertEqual(redact(line), line)
-        for raw in ("DB_PASS=x", "DBPASSWORD=y", "MYSQL_PASSWD=q"):
-            self.assertIn("[REDACTED]", redact(raw))
+        for line in ("bypass=on", "compass=north", "surpass: yes"):
+            self.assertEqual(redact(line), line)
+        for raw in ("DB_PASS=x", "DBPASSWORD=y", "MYSQL_PASSWD=q", "DBPASS=hunter2xyz",
+                    "Environment=SMTPPASS=hunter2", "ADMINPASS: letmein1", "PGPASSWORD=pw9", "mysql_pass=m"):
+            self.assertIn("[REDACTED]", redact(raw), raw)
+            self.assertNotRegex(redact(raw), r"hunter2|letmein1|pw9|=m$")
 
     def test_cgroup_path_not_ipv6(self):
         self.assertEqual(redact("0::/agent"), "0::/agent")
