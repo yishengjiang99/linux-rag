@@ -7,6 +7,7 @@ User=root
 Group=linux-rag
 WorkingDirectory=/opt/linux-rag
 EnvironmentFile=-/etc/linux-rag/live.env
+EnvironmentFile=-/etc/linux-rag/mysql.env
 ExecStart=/usr/bin/python3 -m rag.live --serve /run/linux-rag/live.sock
 RuntimeDirectory=linux-rag
 RuntimeDirectoryMode=0750
@@ -25,8 +26,6 @@ CapabilityBoundingSet=CAP_DAC_READ_SEARCH
 # Unix socket only: MySQL is reached via the local mysqld socket, not TCP.
 # ss uses netlink. AF_INET/AF_INET6 are omitted on purpose.
 RestrictAddressFamilies=AF_UNIX AF_NETLINK
-# Prod default MySQL env file (values never leave the helper). Dash: ignore if missing.
-BindReadOnlyPaths=-/home/finalcut/apps/pages/finalcut/.env
 
 [Install]
 WantedBy=multi-user.target

@@ -43,6 +43,35 @@ class RedactTest(unittest.TestCase):
         self.gone("mysql://app:p4ssw0rd@localhost/db", "p4ssw0rd")
         self.gone("sess 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "9f86d081")
 
+    def test_stripe_ids(self):
+        ids = {
+            "cus_NcPz8kA1B2c3d4": "cus_",
+            "pi_3NiwXU2eZvKYlo2C": "pi_",
+            "ch_3NiwXU2eZvKYlo2C": "ch_",
+            "sub_1NiwXU2eZvKYlo2C": "sub_",
+            "in_1NiwXU2eZvKYlo2C": "in_",
+            "pm_1NiwXU2eZvKYlo2C": "pm_",
+            "seti_1NiwXU2eZvKYlo": "seti_",
+            "evt_1NiwXU2eZvKYlo2C": "evt_",
+            "acct_1NiwXU2eZvKYlo": "acct_",
+        }
+        for ident, prefix in ids.items():
+            out = self.gone("stripe id " + ident + " in a log", ident)
+            self.assertIn("[REDACTED-STRIPE]", out)
+        for raw, secret in (
+            ("sk_live_abcdefghijklmnop", "sk_live_abcdef"),
+            ("sk_test_abcdefghijklmnop", "sk_test_abcdef"),
+            ("pk_live_abcdefghijklmnop", "pk_live_abcdef"),
+            ("pk_test_abcdefghijklmnop", "pk_test_abcdef"),
+            ("rk_live_abcdefghijklmnop", "rk_live_abcdef"),
+            ("whsec_abcdefghijklmnopQR", "whsec_abcdef"),
+        ):
+            out = self.gone("key " + raw, secret)
+            self.assertIn("[REDACTED-TOKEN]", out)
+        # not Stripe IDs
+        for keep in ("in_progress", "sub_filter", "pi * 2", "checkout form"):
+            self.assertIn(keep.split()[0], redact(keep))
+
     def test_pem(self):
         pem = "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBg\nkqhkiG9w0BAQEF\n-----END PRIVATE KEY-----"
         self.gone("x\n" + pem + "\ny", "MIIEvQIBADANBg")
@@ -88,7 +117,7 @@ class RedactTest(unittest.TestCase):
                   "/root/.ssh/authorized_keys", "/proc/self/environ", "/proc/1/cmdline", "/proc/self/mem",
                   "/proc/1/fd/3", "/etc/security/opasswd", "/etc/ssl/private/k", "/root/.netrc",
                   "/proc/kcore", "/proc/self/maps", "/proc/1234/maps", "/proc/1/task/2/maps", "/etc/ssh/sshd_config",
-                  "/etc/ssh/ssh_config.d/x.conf", "/etc/linux-rag/secrets", "/etc/linux-rag/anything","/etc/gbk-composer.env", "/srv/app/.env", "/srv/app/.env.production", "/etc/ssl/private/x.key",
+                  "/etc/ssh/ssh_config.d/x.conf", "/etc/linux-rag/secrets", "/etc/linux-rag/mysql.env", "/etc/linux-rag/anything","/etc/gbk-composer.env", "/srv/app/.env", "/srv/app/.env.production", "/etc/ssl/private/x.key",
                   "/etc/letsencrypt/live/a/privkey.pem", "/etc/nginx/.htpasswd", "/root/.ssh/id_ed25519", "/root", "/root/.bashrc", "/root/secret.txt"):
             self.assertFalse(path_allowed(p), p)
         for p in ("/etc/nginx/sites-available/finalcut", "/etc/systemd/system/finalcut.service", "/var/log/nginx/error.log",

@@ -39,9 +39,9 @@ SERVE_WORKERS = 4
 SERVE_QUEUE = 8
 PT = ZoneInfo("America/Los_Angeles")
 
-FORBIDDEN_ENV_FILES = ("/etc/gbk-composer.env", "/etc/linux-rag/secrets")
-DEFAULT_MYSQL_ENV_FILE = "/home/finalcut/apps/pages/finalcut/.env"
+FORBIDDEN_ENV_FILES = ("/etc/gbk-composer.env", "/etc/linux-rag/secrets", "/etc/linux-rag/mysql.env")
 DEFAULT_MYSQL_SOCKET = "/var/run/mysqld/mysqld.sock"
+_MYSQL_ENV_PREFIX = "MYSQL_"
 DEFAULT_JOURNAL_UNITS = "linux-rag,linux-rag-live,linux-rag-collect,nginx,mysql,mysqld,finalcut"
 
 STATUS_KEYS = {
@@ -106,14 +106,34 @@ def settings(env=None):
         "log_paths": csv("RAG_LOG_PATHS", ""),
         "auth_log": g("RAG_AUTH_LOG", "/var/log/auth.log"),
         "journal_units": csv("RAG_JOURNAL_UNITS", DEFAULT_JOURNAL_UNITS),
-        "mysql_env_file": g("RAG_MYSQL_ENV_FILE", DEFAULT_MYSQL_ENV_FILE),
         "mysql_socket": g("RAG_MYSQL_SOCKET", DEFAULT_MYSQL_SOCKET),
-        "mysql_keys": {
-            "host": g("RAG_MYSQL_KEY_HOST", "MYSQL_HOST"),
-            "user": g("RAG_MYSQL_KEY_USER", "MYSQL_USER"),
-            "password": g("RAG_MYSQL_KEY_PASSWORD", "MYSQL_PASSWORD"),
-            "database": g("RAG_MYSQL_KEY_DATABASE", "MYSQL_DATABASE"),
-        },
+    }
+
+
+def subprocess_env(extra=None):
+    """Copy the process environment with MYSQL_* stripped. extra is applied after the strip."""
+    env = {k: v for k, v in os.environ.items() if not k.startswith(_MYSQL_ENV_PREFIX)}
+    if extra:
+        env.update(extra)
+    return env
+
+
+def mysql_creds_from_env(env=None):
+    """Read MYSQL_USER/PASSWORD/HOST/DATABASE from the helper environment. No file reads.
+
+    systemd loads /etc/linux-rag/mysql.env into linux-rag-live.service only.
+    Returns None (skip MySQL sources) if user or password is missing.
+    """
+    e = os.environ if env is None else env
+    user = (e.get("MYSQL_USER") or "").strip()
+    password = e.get("MYSQL_PASSWORD") or ""
+    if not user or not password:
+        return None
+    return {
+        "host": (e.get("MYSQL_HOST") or "").strip(),
+        "user": user,
+        "password": password,
+        "database": (e.get("MYSQL_DATABASE") or "").strip(),
     }
 
 
@@ -172,7 +192,7 @@ def read_allowed(path, max_bytes=MAX_FILE_BYTES, tail=False, open_file=None):
 def _run(cmd, timeout=15):
     try:
         r = subprocess.run(["bash", "-c", cmd], capture_output=True, text=True,
-                           errors="replace", timeout=timeout)
+                           errors="replace", timeout=timeout, env=subprocess_env())
         return r.stdout or r.stderr or ""
     except (subprocess.TimeoutExpired, OSError):
         return ""
@@ -213,6 +233,15 @@ def redact_query_values(text):
     """Replace string literals in SQL/query text so values never leave the helper."""
     text = re.sub(r"'(?:\\'|[^'])*'", "'?'", text)
     text = re.sub(r'"(?:\\"|[^"])*"', "'?'", text)
+    return text
+
+
+def redact_sql_literals(text):
+    """Replace string, numeric, hex, and UUID literals in processlist Info."""
+    text = redact_query_values(text)
+    text = re.sub(r"\b0x[0-9A-Fa-f]+\b", "?", text)
+    text = re.sub(r"\b[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}\b", "?", text)
+    text = re.sub(r"(?<![A-Za-z0-9_])\d+(?:\.\d+)?(?![A-Za-z0-9_])", "?", text)
     return text
 
 
@@ -277,55 +306,13 @@ def auth_summary(text):
     )
 
 
-def load_mysql_creds(path, keys, open_file=None):
-    """Read only the configured host/user/password/database key names. Never log values."""
-    if forbidden_env_file(path) or not path:
-        raise ValueError("mysql env file is off limits")
-    wanted = {keys[k] for k in ("host", "user", "password", "database") if keys.get(k)}
-    raw = None
-    if open_file is not None:
-        raw = open_file(path)
-    else:
-        flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NOCTTY | os.O_NONBLOCK
-        try:
-            fd = os.open(path, flags)
-        except OSError:
-            raise ValueError("mysql env unavailable") from None
-        try:
-            try:
-                real = os.readlink(f"/proc/self/fd/{fd}")
-            except OSError:
-                real = path
-            if forbidden_env_file(real):
-                raise ValueError("mysql env file is off limits")
-            raw = os.read(fd, 1_000_000).decode("utf-8", "replace")
-        except BlockingIOError:
-            raw = ""
-        finally:
-            os.close(fd)
-    found = {}
-    for line in (raw or "").splitlines():
-        s = line.strip()
-        if s.startswith("export "):
-            s = s[7:].strip()
-        if not s or s.startswith("#") or "=" not in s:
-            continue
-        k, _, v = s.partition("=")
-        k, v = k.strip(), v.strip()
-        if len(v) >= 2 and v[0] == v[-1] and v[0] in "'\"":
-            v = v[1:-1]
-        if k in wanted:
-            found[k] = v
-    return {role: found.get(keys[role], "") for role in ("host", "user", "password", "database")}
-
-
 def mysql_cli(sql, creds, mysql_bin=None, socket_path=DEFAULT_MYSQL_SOCKET):
     """Run an allowlisted statement over the local unix socket (no TCP, password not on argv)."""
     sql = allow_sql(sql)
     bin_ = mysql_bin or _mysql_bin()
     if not bin_:
         raise ValueError("mysql unavailable")
-    env = {k: v for k, v in os.environ.items() if k != "MYSQL_PWD"}
+    env = subprocess_env()
     if creds.get("password"):
         env["MYSQL_PWD"] = creds["password"]
     sock = socket_path or DEFAULT_MYSQL_SOCKET
@@ -348,7 +335,8 @@ def mysql_cli(sql, creds, mysql_bin=None, socket_path=DEFAULT_MYSQL_SOCKET):
 def _mysql_bin():
     for name in ("mysql", "mariadb"):
         try:
-            r = subprocess.run(["bash", "-c", f"command -v {name}"], capture_output=True, text=True, timeout=3)
+            r = subprocess.run(["bash", "-c", f"command -v {name}"], capture_output=True, text=True,
+                               timeout=3, env=subprocess_env())
             if r.returncode == 0 and r.stdout.strip():
                 return r.stdout.strip()
         except (subprocess.TimeoutExpired, OSError):
@@ -375,8 +363,18 @@ def filter_global_status(text):
 
 
 def format_processlist(text):
-    lines = [redact_query_values(l) for l in text.splitlines()]
-    return "MySQL processlist (query values redacted)\n" + redact("\n".join(lines))
+    out = []
+    for i, line in enumerate(text.splitlines()):
+        parts = line.split("\t")
+        if i == 0 and parts and parts[-1].strip().lower() in ("info", "query"):
+            out.append(line)
+            continue
+        if len(parts) >= 8:
+            parts[-1] = redact_sql_literals(parts[-1])
+            out.append("\t".join(parts))
+        else:
+            out.append(redact_sql_literals(line))
+    return "MySQL processlist (query values redacted)\n" + redact("\n".join(out))
 
 
 def innodb_summary(text, max_lines=80):
@@ -393,12 +391,14 @@ def innodb_summary(text, max_lines=80):
     return "MySQL InnoDB status summary\n" + redact(body)
 
 
-def collect_mysql(cfg, run_sql=None, open_env=None, creds=None):
+def collect_mysql(cfg, run_sql=None, creds=None, env=None):
     """Read-only MySQL status. Credentials never appear in the returned text or in errors."""
     chunks = []
     try:
         if creds is None:
-            creds = load_mysql_creds(cfg["mysql_env_file"], cfg["mysql_keys"], open_file=open_env)
+            creds = mysql_creds_from_env(env)
+        if not creds:
+            return []
 
         def q(sql):
             try:
@@ -505,7 +505,7 @@ def collect_journals(cfg, run):
 
 
 def collect(open_file=None, run_cmd=None, paths=None, commands=None, include_snapshot=True,
-            include_extras=None, clock=time.time, cfg=None, run_sql=None, open_env=None, mysql_creds=None):
+            include_extras=None, clock=time.time, cfg=None, run_sql=None, mysql_creds=None):
     """Read the prod allowlist, redact, chunk. Denylisted paths are never opened.
 
     open_file(path, max_bytes, tail) is only called after path_allowed.
@@ -658,7 +658,7 @@ def collect(open_file=None, run_cmd=None, paths=None, commands=None, include_sna
         text = take(health or "")
         if text:
             add("server health", "health:status", text, lines=80)
-        for kind, path, text in collect_mysql(cfg, run_sql=run_sql, open_env=open_env, creds=mysql_creds):
+        for kind, path, text in collect_mysql(cfg, run_sql=run_sql, creds=mysql_creds):
             text = take(text)
             if text:
                 add(kind, path, text, lines=80)
@@ -749,7 +749,7 @@ def default_collect(clock=time.time):
 
 
 def search(query, k=None, collect_fn=None, clock=time.time, open_file=None, paths=None,
-           commands=None, run_cmd=None, cfg=None, run_sql=None, open_env=None, mysql_creds=None):
+           commands=None, run_cmd=None, cfg=None, run_sql=None, mysql_creds=None):
     """BM25-rank live chunks against the question. Caches the raw read for CACHE_TTL seconds."""
     cfg = cfg or settings()
     if k is None:

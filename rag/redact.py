@@ -41,6 +41,9 @@ _RULES = [
     # credentials in URLs  scheme://user:pass@host
     (re.compile(r"\b([a-z][a-z0-9+.-]*://)[^/\s:@]+:[^/\s@]+@"), r"\1" + R + "@"),
     # well-known token formats
+    # Stripe object IDs and keys (cus_/pi_/ch_/sub_/in_/pm_/seti_/evt_/acct_, sk_/pk_/rk_, whsec_)
+    (re.compile(r"\b(?:cus|pi|ch|sub|in|pm|seti|evt|acct)_[A-Za-z0-9]{10,}\b"), "[REDACTED-STRIPE]"),
+    (re.compile(r"\b(?:sk|pk|rk)_(?:live|test)_[A-Za-z0-9]{8,}\b"), "[REDACTED-TOKEN]"),
     (re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}"), "[REDACTED-JWT]"),
     (re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})"), "[REDACTED-TOKEN]"),
     (re.compile(r"\b(?:xai|sk|pk|rk)[-_](?:live_|test_|proj-|ant-)?[A-Za-z0-9_-]{16,}"), "[REDACTED-TOKEN]"),

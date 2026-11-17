@@ -153,7 +153,8 @@ ERROR_LOG = (
 PROCESSLIST = (
     "Id\tUser\tHost\tdb\tCommand\tTime\tState\tInfo\n"
     "1\tapp\t203.0.113.9:3306\tfinalcut\tQuery\t2\tSending data\t"
-    "SELECT * FROM users WHERE email='alice@example.com' AND token='hunter2secret'\n"
+    "SELECT * FROM users WHERE email='alice@example.com' AND token='hunter2secret' "
+    "AND id=12345 AND uuid='a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'\n"
 )
 MYSQL_PW = "s3cret-mysql-pw-VALUE"
 
@@ -179,6 +180,10 @@ class LiveExtrasTest(unittest.TestCase):
         self.assertNotIn("203.0.113.9", out)
         self.assertIn("SELECT", out)
         self.assertIn("'?'", out)
+        self.assertNotIn("12345", out)
+        self.assertNotIn("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", out)
+        # Id / Time columns on the processlist row are kept; only Info literals are replaced
+        self.assertIn("\tQuery\t2\t", out)
 
     def test_sql_allowlist_rejects_non_select_show(self):
         live.allow_sql("SHOW GLOBAL STATUS")
@@ -198,34 +203,6 @@ class LiveExtrasTest(unittest.TestCase):
             self.assertEqual(str(ctx.exception), "sql not allowed")
             self.assertNotIn("passwd", str(ctx.exception))
             self.assertNotIn("finalcut", str(ctx.exception))
-
-    def test_mysql_forbidden_env_never_opened(self):
-        opened = []
-
-        def open_env(path):
-            opened.append(path)
-            return "MYSQL_PASSWORD=" + MYSQL_PW + "\n"
-
-        for path in ("/etc/gbk-composer.env", "/etc/linux-rag/secrets"):
-            opened.clear()
-            with self.assertRaises(ValueError) as ctx:
-                live.load_mysql_creds(path, live.settings()["mysql_keys"], open_file=open_env)
-            self.assertEqual(str(ctx.exception), "mysql env file is off limits")
-            self.assertEqual(opened, [])
-            self.assertNotIn(MYSQL_PW, str(ctx.exception))
-
-        opened = []
-        real = os.open
-
-        def spy(path, *a, **k):
-            opened.append(path)
-            return real(path, *a, **k)
-
-        with mock.patch("os.open", spy):
-            for path in ("/etc/gbk-composer.env", "/etc/linux-rag/secrets"):
-                with self.assertRaises(ValueError):
-                    live.load_mysql_creds(path, live.settings()["mysql_keys"])
-        self.assertEqual(opened, [])
 
     def test_mysql_chunks_and_errors_never_include_secrets(self):
         cfg = live.settings()
@@ -251,12 +228,25 @@ class LiveExtrasTest(unittest.TestCase):
         self.assertNotIn("alice@example.com", text)
         self.assertNotIn("203.0.113.9", text)
         self.assertNotIn("hunter2secret", text)
+        self.assertNotIn("12345", text)
 
         def bad_sql(sql):
             raise ValueError("access denied for '" + MYSQL_PW + "' at 203.0.113.9")
 
         chunks = live.collect_mysql(cfg, run_sql=bad_sql, creds=creds)
         self.assertEqual(chunks, [])
+
+    def test_mysql_skipped_when_creds_missing(self):
+        self.assertIsNone(live.mysql_creds_from_env({}))
+        self.assertIsNone(live.mysql_creds_from_env({"MYSQL_USER": "app"}))
+        self.assertIsNone(live.mysql_creds_from_env({"MYSQL_PASSWORD": MYSQL_PW}))
+        self.assertEqual(live.collect_mysql(live.settings(), env={}), [])
+        creds = live.mysql_creds_from_env({
+            "MYSQL_HOST": "localhost", "MYSQL_USER": "app",
+            "MYSQL_PASSWORD": MYSQL_PW, "MYSQL_DATABASE": "finalcut",
+        })
+        self.assertEqual(creds["user"], "app")
+        self.assertEqual(creds["password"], MYSQL_PW)
 
     def test_auth_summary_has_counts_not_identities(self):
         raw = ("sshd: Accepted publickey for alice from 203.0.113.9 port 22\n"
@@ -269,8 +259,16 @@ class LiveExtrasTest(unittest.TestCase):
         for s in ("alice", "bob", "eve", "203.0.113.9", "198.51.100.10"):
             self.assertNotIn(s, out)
 
-    def test_configured_denylist_paths_not_opened(self):
+    def test_collect_never_opens_env_paths(self):
         opened = []
+        env_paths = [
+            "/etc/nginx/.env",
+            "/home/finalcut/apps/pages/finalcut/.env",
+            "/opt/app/.env.production",
+            "/tmp/foo.env",
+            "/etc/linux-rag/mysql.env",
+            "/etc/gbk-composer.env",
+        ]
 
         def open_file(path, max_bytes, tail):
             opened.append(path)
@@ -278,24 +276,67 @@ class LiveExtrasTest(unittest.TestCase):
                 return ACCESS_LOG
             if path.endswith("error.log"):
                 return ERROR_LOG
-            return ""
+            if path.endswith("nginx.conf"):
+                return "http {\n  server { listen 80; }\n}\n"
+            return "SHOULD_NOT_READ"
 
-        cfg = live.settings({"RAG_LOG_PATHS": "/etc/gbk-composer.env,/etc/linux-rag/secrets,/var/log/nginx/access.log",
+        cfg = live.settings({"RAG_LOG_PATHS": ",".join(env_paths),
                              "RAG_NGINX_ACCESS_LOG": "/var/log/nginx/access.log",
                              "RAG_NGINX_ERROR_LOG": "/var/log/nginx/error.log",
-                             "RAG_AUTH_LOG": "/etc/linux-rag/secrets",
-                             "RAG_MYSQL_ENV_FILE": "/etc/gbk-composer.env",
+                             "RAG_AUTH_LOG": "/etc/linux-rag/mysql.env",
                              "RAG_JOURNAL_UNITS": ""})
+        paths = [("nginx config", "/etc/nginx/nginx.conf", False, False)] + [
+            ("env", p, False, False) for p in env_paths
+        ]
         chunks, _ = live.collect(
-            open_file=open_file, run_cmd=lambda cmd: "", paths=None, commands=[],
+            open_file=open_file, run_cmd=lambda cmd: "", paths=paths, commands=[],
             include_snapshot=False, include_extras=True, cfg=cfg,
-            mysql_creds={"host": "", "user": "", "password": MYSQL_PW, "database": ""},
+            mysql_creds={"host": "", "user": "app", "password": MYSQL_PW, "database": ""},
             run_sql=lambda sql: "",
         )
-        self.assertNotIn("/etc/gbk-composer.env", opened)
-        self.assertNotIn("/etc/linux-rag/secrets", opened)
+        for p in opened:
+            self.assertFalse(p.endswith(".env") or ".env." in p or p.endswith("mysql.env"), p)
         text = "\n".join(c[3] for c in chunks)
         self.assertNotIn(MYSQL_PW, text)
+        self.assertNotIn("SHOULD_NOT_READ", text)
+
+    def test_subprocesses_do_not_inherit_mysql(self):
+        import subprocess
+        for k, v in (("MYSQL_PASSWORD", MYSQL_PW), ("MYSQL_USER", "app"),
+                     ("MYSQL_HOST", "localhost"), ("MYSQL_DATABASE", "finalcut"),
+                     ("MYSQL_PWD", MYSQL_PW)):
+            os.environ[k] = v
+        try:
+            env = live.subprocess_env()
+            for k in ("MYSQL_PASSWORD", "MYSQL_USER", "MYSQL_HOST", "MYSQL_DATABASE", "MYSQL_PWD"):
+                self.assertNotIn(k, env)
+            self.assertNotIn(MYSQL_PW, " ".join(env.values()))
+            seen = []
+
+            def capture(*_a, **kw):
+                seen.append(dict(kw.get("env") or {}))
+                return subprocess.CompletedProcess(args=[], returncode=0, stdout="ok", stderr="")
+
+            with mock.patch("subprocess.run", side_effect=capture):
+                live._run("true")
+                self.assertEqual(len(seen), 1)
+                got = seen[0]
+                for k in ("MYSQL_PASSWORD", "MYSQL_USER", "MYSQL_HOST", "MYSQL_DATABASE", "MYSQL_PWD"):
+                    self.assertNotIn(k, got)
+                self.assertNotIn(MYSQL_PW, " ".join(map(str, got.values())))
+                # mysql client gets MYSQL_PWD only, never MYSQL_PASSWORD
+                seen.clear()
+                creds = {"host": "localhost", "user": "app", "password": MYSQL_PW, "database": "finalcut"}
+                with mock.patch.object(live, "_mysql_bin", return_value="/usr/bin/mysql"):
+                    live.mysql_cli("SHOW GLOBAL STATUS", creds)
+                self.assertEqual(len(seen), 1)
+                menv = seen[0]
+                self.assertEqual(menv.get("MYSQL_PWD"), MYSQL_PW)
+                self.assertNotIn("MYSQL_PASSWORD", menv)
+                self.assertNotIn("MYSQL_USER", menv)
+        finally:
+            for k in ("MYSQL_PASSWORD", "MYSQL_USER", "MYSQL_HOST", "MYSQL_DATABASE", "MYSQL_PWD"):
+                os.environ.pop(k, None)
 
     def test_sample_env_has_no_secret_looking_values(self):
         root = Path(__file__).resolve().parent.parent
@@ -311,14 +352,11 @@ class LiveExtrasTest(unittest.TestCase):
             s = line.strip()
             self.assertIsNone(secret_val.search(s), f"line {i}: {s}")
             if not s or s.startswith("#"):
-                if "MYSQL_ENV_FILE" in s:
-                    self.assertIn("/path/to/", s)
                 continue
             k, _, v = s.partition("=")
             v = v.strip().strip("'\"")
             self.assertFalse(secret_val.search(v), f"{k}={v}")
-            if "PASSWORD" in k:
-                self.assertEqual(v, "MYSQL_PASSWORD")
+            self.assertNotIn("PASSWORD", k)
             self.assertNotRegex(v, r"^[A-Za-z0-9+/=_-]{24,}$")
 
 

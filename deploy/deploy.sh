@@ -40,6 +40,7 @@ grep -q '^XAI_API_KEY=' /etc/linux-rag/secrets || { echo "XAI_API_KEY missing in
 cd /opt/linux-rag
 # public indexes (kernel + man-pages clones live in /var/lib/linux-rag/corpora)
 runuser -u linux-rag -- env PYTHONDONTWRITEBYTECODE=1 scripts/build_index.sh /var/lib/linux-rag/corpora /var/lib/linux-rag
+# Never create, overwrite, or print /etc/linux-rag/mysql.env (0600 credentials, managed separately).
 if [ ! -f /etc/linux-rag/live.env ]; then
   install -m 644 -o root -g root sample.env /etc/linux-rag/live.env
   echo "created /etc/linux-rag/live.env from sample.env"
