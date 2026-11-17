@@ -1,7 +1,7 @@
 [Unit]
 Description=Linux RAG (grepawk.com/rag): search over kernel docs, source, man pages + Grok answers
-After=network-online.target
-Wants=network-online.target
+After=network-online.target linux-rag-live.service
+Wants=network-online.target linux-rag-live.service
 
 [Service]
 User=linux-rag
@@ -9,7 +9,7 @@ Group=linux-rag
 WorkingDirectory=/opt/linux-rag
 # XAI_API_KEY and RAG_ADMIN_PASSWORD live here (root:root 0600, read by systemd before dropping privileges)
 EnvironmentFile=/etc/linux-rag/secrets
-Environment=RAG_HOST=127.0.0.1 RAG_PORT=8795 RAG_DATA=/var/lib/linux-rag
+Environment=RAG_HOST=127.0.0.1 RAG_PORT=8795 RAG_DATA=/var/lib/linux-rag RAG_LIVE_SOCKET=/run/linux-rag/live.sock
 Environment=RAG_PER_IP_DAILY=20 RAG_GLOBAL_DAILY=400 RAG_MAX_TOKENS=700
 ExecStart=/usr/bin/python3 -m rag.server
 Restart=on-failure

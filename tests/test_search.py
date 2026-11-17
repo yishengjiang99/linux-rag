@@ -88,6 +88,17 @@ class SearchTest(unittest.TestCase):
         admin_hits = self.ix.search(q, admin=True)
         self.assertEqual(admin_hits[0]["corpus"], "prod")
 
+    def test_live_ahead_of_prod_public_ignores(self):
+        live_hits = [{"title": "live nginx", "path": "/etc/nginx/nginx.conf", "loc": "L1-1",
+                      "body": "connect() failed (111: Connection refused) while connecting to upstream 502",
+                      "score": -1.0, "read_at": 1000.0}]
+        q = "upstream connection refused 502"
+        public = self.ix.search(q, live=live_hits)
+        self.assertFalse([h for h in public if h["corpus"] in ("live", "prod")])
+        admin = self.ix.search(q, admin=True, live=live_hits)
+        self.assertEqual(admin[0]["corpus"], "live")
+        self.assertIn("prod", [h["corpus"] for h in admin])
+
     def test_uploads(self):
         db = upload_db()
         db.execute("INSERT INTO chunks(title, path, loc, body) VALUES ('u','u.log','L1','kernel panic in foo_driver')")

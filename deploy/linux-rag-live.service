@@ -1,0 +1,22 @@
+[Unit]
+Description=Linux RAG: on-demand redacted live reads of this server (admin ask path)
+After=network-online.target
+
+[Service]
+User=root
+Group=linux-rag
+WorkingDirectory=/opt/linux-rag
+ExecStart=/usr/bin/python3 -m rag.live --serve /run/linux-rag/live.sock
+RuntimeDirectory=linux-rag
+RuntimeDirectoryMode=0750
+Restart=on-failure
+RestartSec=2
+MemoryMax=256M
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

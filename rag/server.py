@@ -9,7 +9,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from rag import grok
+from rag import grok, live
 from rag.chunk import text_chunks
 from rag.ratelimit import DailyCap, Limiter
 from rag.search import Index, upload_db
@@ -28,6 +28,8 @@ MAX_SESSIONS = 5000
 
 SYSTEM = """You are Linux RAG, answering questions about Linux (syscalls, kernel internals, man pages,
 and, for admins, one production server's nginx/systemd configs and logs).
+Sources labeled "live" were just read from this production server and redacted; the read time
+is in the source label. The hourly prod index is a slightly older copy of the same files.
 Sources labeled "sample snapshot" are real /proc, /sys and /etc files from an example Linux box
 (not the asker's machine): use them as concrete examples next to the docs that explain them.
 Answer ONLY from the numbered sources given. Cite them inline like [1] or [2][4].
@@ -70,8 +72,13 @@ def source_label(h):
         return f"{p}:{loc}", f"https://github.com/torvalds/linux/blob/{rev}/{p}#L{a}-L{b}"
     if c == "sys":
         return f"{p}:{loc} (sample snapshot)", ""
+    if c == "live":
+        when = live.format_read_at(h["read_at"]) if h.get("read_at") else "just now"
+        return f"{p}:{loc} (live, read {when})", ""
     if c == "upload":
         return f"your upload {p}:{loc}", ""
+    if c == "prod":
+        return f"{p}:{loc} (hourly snapshot)", ""
     return f"{p}:{loc}", ""
 
 
@@ -244,8 +251,14 @@ class Handler(BaseHTTPRequestHandler):
         why = ask_cap.take(ip)
         if why:
             return self.err(429, why)
+        live_hits = []
+        if s["admin"]:
+            try:
+                live_hits = live.search(q)
+            except Exception as e:
+                print(f"live collect error: {type(e).__name__}", flush=True)
         with index_lock:
-            hits = index.search(q, admin=s["admin"], uploads=s["db"])
+            hits = index.search(q, admin=s["admin"], uploads=s["db"], live=live_hits)
         messages, sources = build_prompt(q, hits)
         if not grok_slots.acquire(timeout=20):
             return self.err(503, "busy, try again")

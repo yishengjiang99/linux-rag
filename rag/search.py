@@ -94,14 +94,19 @@ class Index:
             if old:
                 old.close()
 
-    def search(self, query, admin=False, uploads=None):
+    def search(self, query, admin=False, uploads=None, live=None):
         self.reload()
         # order matters: the prompt is filled in this order until the context budget runs out,
-        # so the visitor's own uploads and (for admins) this server's data go first
+        # so the visitor's own uploads, live server reads, then hourly prod, then public docs
         hits = []
         if uploads is not None:
             for h in search_db(uploads, query, 3):
                 h["corpus"] = "upload"
+                hits.append(h)
+        if admin and live:
+            for h in live:
+                h = dict(h)
+                h["corpus"] = "live"
                 hits.append(h)
         for name, k in (ADMIN if admin else []) + PUBLIC:
             if name in self.dbs:
@@ -121,7 +126,7 @@ class Index:
         qwords = set(re.findall(r"[a-z0-9]+", query.lower())) - STOP - {"proc", "sys", "etc", "linux"}
         for h in hits:
             out.append(h)
-            if h["corpus"] not in ("sys", "prod") or paired >= max_snapshots:
+            if h["corpus"] not in ("sys", "prod", "live") or paired >= max_snapshots:
                 continue
             if not qwords & set(re.findall(r"[a-z0-9]+", h["path"].lower())):
                 continue  # only pair snapshots the question is actually about

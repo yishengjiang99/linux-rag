@@ -171,8 +171,9 @@ def _parse(out):
     return {k: "\n".join(v).rstrip("\n") for k, v in files.items()}
 
 
-def collect(run, public=True, specs=SPECS):
-    """run(cmd) -> stdout. Returns [{path, title, docs, text}] already transformed and redacted."""
+def collect(run, public=True, specs=SPECS, read_file=None):
+    """run(cmd) -> stdout. Returns [{path, title, docs, text}] already transformed and redacted.
+    If read_file(path) is given, each listed path is read through it after path_allowed (no shell read)."""
     if public:
         specs = [s for s in specs if s.get("public", True)]
     listed = {}
@@ -192,7 +193,10 @@ def collect(run, public=True, specs=SPECS):
             disk = next((d for d in disks if not d.startswith(("loop", "ram", "zram"))), disks[0])
             allowed[i] = [p for p in allowed[i] if p.split("/")[3] == disk]
     paths = [p for ps in allowed.values() for p in ps]
-    contents = _parse(run("bash -c " + shlex.quote(_read_script(paths)))) if paths else {}
+    if read_file is not None:
+        contents = {p: (read_file(p) or "") for p in paths}
+    else:
+        contents = _parse(run("bash -c " + shlex.quote(_read_script(paths)))) if paths else {}
 
     docs_out = []
     for i, s in enumerate(specs):

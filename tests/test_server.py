@@ -29,6 +29,8 @@ grok.chat = fake_chat
 class ServerTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls._live_search = server.live.search
+        server.live.search = lambda q, **k: []
         cls.srv = server.ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
         threading.Thread(target=cls.srv.serve_forever, daemon=True).start()
         cls.port = cls.srv.server_address[1]
@@ -36,6 +38,7 @@ class ServerTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.srv.shutdown()
+        server.live.search = cls._live_search
 
     def req(self, method, path, body=None, cookie=None, ip="198.51.100.1", raw=None):
         c = http.client.HTTPConnection("127.0.0.1", self.port)
@@ -92,7 +95,38 @@ class ServerTest(unittest.TestCase):
         self.req("POST", "/rag/api/ask", {"q": "nginx 502 upstream"}, cookie=ck, ip=ip)
         self.assertNotIn("SECRETPRODLINE", PROMPTS[-1])
 
+    def test_public_ask_gets_no_live_or_prod(self):
+        calls = []
+        hits = [{"title": "live nginx", "path": "/etc/nginx/nginx.conf", "loc": "L1-1",
+                 "body": "LIVEUNIQUEMARKER listen 80", "score": -10.0, "read_at": 1_000.0}]
+
+        def fake(q, **k):
+            calls.append(q)
+            return [dict(h) for h in hits]
+
+        server.live.search = fake
+        try:
+            ip = "198.51.100.70"
+            st, d, _, _ = self.req("POST", "/rag/api/ask", {"q": "nginx listen"}, ip=ip)
+            self.assertEqual(st, 200, d)
+            self.assertEqual(calls, [])
+            self.assertNotIn("LIVEUNIQUEMARKER", PROMPTS[-1])
+            self.assertFalse(any(s["corpus"] in ("live", "prod") for s in d["sources"]))
+            st, _, ck, _ = self.req("POST", "/rag/api/login", {"password": "correct-horse-battery"}, ip=ip)
+            self.assertEqual(st, 200)
+            st, d, _, _ = self.req("POST", "/rag/api/ask", {"q": "nginx listen"}, cookie=ck, ip=ip)
+            self.assertEqual(st, 200, d)
+            self.assertEqual(calls, ["nginx listen"])
+            self.assertIn("LIVEUNIQUEMARKER", PROMPTS[-1])
+            self.assertLess(PROMPTS[-1].index("LIVEUNIQUEMARKER"), PROMPTS[-1].index("Question:"))
+            self.assertEqual(d["sources"][0]["corpus"], "live")
+            self.assertIn("(live, read ", d["sources"][0]["label"])
+            self.assertIn(" PT", d["sources"][0]["label"])
+        finally:
+            server.live.search = lambda q, **k: []
+
     def test_login_rate_limited(self):
+
         codes = [self.req("POST", "/rag/api/login", {"password": "x"}, ip="198.51.100.40")[0] for _ in range(7)]
         self.assertEqual(codes[-1], 429)
 

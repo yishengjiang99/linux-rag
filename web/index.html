@@ -17,7 +17,7 @@
   #sources { font-size: 13px; padding-left: 20px; }
   #sources li { word-break: break-all; }
   .tag { font-size: 11px; color: #fff; background: #777; border-radius: 3px; padding: 0 4px; margin-right: 4px; }
-  .tag.prod { background: #b00; } .tag.upload { background: #06c; } .tag.sys { background: #2a7a2a; }
+  .tag.prod { background: #b00; } .tag.live { background: #c60; } .tag.upload { background: #06c; } .tag.sys { background: #2a7a2a; }
   .muted { color: #666; font-size: 13px; }
   details { margin-top: 18px; } fieldset { border: 1px solid #ddd; margin: 8px 0; }
 </style>
@@ -54,7 +54,7 @@
 
 <details id="admin">
   <summary>Admin</summary>
-  <p class="muted">Admins can also search this server's redacted nginx/systemd configs and logs.</p>
+  <p class="muted">Admins can also search this server's live, redacted nginx/systemd configs, logs and /proc (read when you ask; hourly index is the fallback).</p>
   <fieldset><input type="password" id="pw" autocomplete="current-password" placeholder="admin password">
   <button id="login" type="button">Log in</button> <button id="logout" type="button">Log out</button>
   <span id="adminstate" class="muted"></span></fieldset>
