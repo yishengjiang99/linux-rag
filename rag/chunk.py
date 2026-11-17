@@ -195,11 +195,84 @@ def c_chunks(src, path, region_lines=60):
     return out
 
 
-def text_chunks(src, path, lines_per=60):
+def text_chunks(src, path, lines_per=60, overlap=0):
+    """Split on line counts. overlap keeps the last N lines of one chunk at the start of the next."""
     lines = src.split("\n")
-    out = []
-    for s in range(0, len(lines), lines_per):
-        body = "\n".join(lines[s:s + lines_per]).strip()
+    out, step, n = [], max(1, lines_per - max(0, overlap)), len(lines)
+    s = 0
+    while s < n:
+        end = min(n, s + lines_per)
+        body = "\n".join(lines[s:end]).strip()
         if body:
-            out.extend(split_long(path, path, f"L{s + 1}-{min(len(lines), s + lines_per)}", body))
+            out.extend(split_long(path, path, f"L{s + 1}-{end}", body))
+        if end >= n:
+            break
+        s += step
+    return out
+
+
+_NGINX_BLOCK = re.compile(r"^\s*(location|server)\b")
+
+
+def _nginx_blocks(lines):
+    """Inclusive 0-based (start, end) spans of location/server blocks."""
+    spans, i, n = [], 0, len(lines)
+    while i < n:
+        if _NGINX_BLOCK.match(lines[i]):
+            depth = 0
+            seen = False
+            j = i
+            while j < n:
+                depth += lines[j].count("{") - lines[j].count("}")
+                if lines[j].count("{"):
+                    seen = True
+                if seen and depth <= 0:
+                    break
+                j += 1
+            spans.append((i, min(j, n - 1)))
+            i = min(j, n - 1) + 1
+            continue
+        i += 1
+    return spans
+
+
+def nginx_chunks(src, path, lines_per=80, overlap=20):
+    """Chunk nginx config without cutting a location/server block mid-way when it fits."""
+    lines = src.split("\n")
+    n = len(lines)
+    if n == 0:
+        return []
+    spans = _nginx_blocks(lines)
+
+    def span_at(idx):
+        for a, b in spans:
+            if a <= idx <= b:
+                return a, b
+        return None
+
+    out, start = [], 0
+
+    def emit(a, b):
+        body = "\n".join(lines[a:b + 1]).strip()
+        if body:
+            out.extend(split_long(path, path, f"L{a + 1}-{b + 1}", body))
+
+    while start < n:
+        end = min(n - 1, start + lines_per - 1)
+        sp = span_at(end)
+        if sp and sp[0] >= start and end < sp[1] and (sp[1] - start + 1) <= lines_per * 2:
+            end = sp[1]  # close the block so proxy_pass etc. stay with location
+        elif sp and sp[0] > start and end < sp[1]:
+            end = sp[0] - 1
+        if end < start:
+            sp = span_at(start)
+            end = min(n - 1, sp[1] if sp else start + lines_per - 1)
+        emit(start, end)
+        if end >= n - 1:
+            break
+        nxt = end + 1 - overlap
+        sp2 = span_at(max(nxt, 0))
+        if sp2 and sp2[0] < nxt <= sp2[1]:
+            nxt = sp2[0]
+        start = max(start + 1, nxt)
     return out

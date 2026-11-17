@@ -89,7 +89,7 @@ class RedactTest(unittest.TestCase):
                   "/proc/1/fd/3", "/etc/security/opasswd", "/etc/ssl/private/k", "/root/.netrc",
                   "/proc/kcore", "/proc/self/maps", "/proc/1234/maps", "/proc/1/task/2/maps", "/etc/ssh/sshd_config",
                   "/etc/ssh/ssh_config.d/x.conf", "/etc/linux-rag/secrets", "/etc/linux-rag/anything","/etc/gbk-composer.env", "/srv/app/.env", "/srv/app/.env.production", "/etc/ssl/private/x.key",
-                  "/etc/letsencrypt/live/a/privkey.pem", "/etc/nginx/.htpasswd", "/root/.ssh/id_ed25519"):
+                  "/etc/letsencrypt/live/a/privkey.pem", "/etc/nginx/.htpasswd", "/root/.ssh/id_ed25519", "/root", "/root/.bashrc", "/root/secret.txt"):
             self.assertFalse(path_allowed(p), p)
         for p in ("/etc/nginx/sites-available/finalcut", "/etc/systemd/system/finalcut.service", "/var/log/nginx/error.log",
                   "/proc/cmdline", "/proc/pressure/memory", "/proc/meminfo", "/etc/passwd", "/proc/kcore_like",

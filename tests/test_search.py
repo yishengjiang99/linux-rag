@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 
-from rag.chunk import c_chunks, man_chunks, rst_chunks
+from rag.chunk import c_chunks, man_chunks, nginx_chunks, rst_chunks, text_chunks
 from rag.index import write_db
 from rag.search import Index, fts_query, search_db, upload_db
 
@@ -55,6 +55,33 @@ class ChunkTest(unittest.TestCase):
     def test_rst_sections(self):
         ch = rst_chunks(RST_SRC, "Documentation/x.rst")
         self.assertEqual([c[0] for c in ch], ["Pipes", "Pipes — Splice"])
+
+    def test_nginx_location_not_split(self):
+        # location /rag/ starts just before the 80-line window ends; proxy_pass is after L80,
+        # so a naive split (the L81-160 cutoff) never keeps the opening and proxy_pass together.
+        preamble = "\n".join(f"# filler {i}" for i in range(1, 76))
+        block = "\n".join(
+            ["location /rag/ {"] +
+            [f"    # inside {i}" for i in range(1, 21)] +
+            ["    proxy_pass http://127.0.0.1:8795;",
+             "    proxy_http_version 1.1;",
+             "    proxy_set_header Host $host;",
+             "}"]
+        )
+        src = preamble + "\n" + block + "\n" + "\n".join(f"# after {i}" for i in range(1, 40))
+        naive = text_chunks(src, "/etc/nginx/sites-enabled/finalcut-site.conf", 80)
+        self.assertFalse(any("location /rag/" in c[3] and "proxy_pass" in c[3] for c in naive))
+        ch = nginx_chunks(src, "/etc/nginx/sites-enabled/finalcut-site.conf", 80, overlap=20)
+        self.assertTrue(any("location /rag/" in c[3] and "proxy_pass http://127.0.0.1:8795" in c[3] for c in ch),
+                        [c[2] for c in ch])
+
+    def test_text_chunks_overlap(self):
+        src = "\n".join(f"line {i}" for i in range(1, 101))
+        ch = text_chunks(src, "x.log", 60, overlap=20)
+        self.assertIn("line 60", ch[0][3])
+        self.assertIn("line 41", ch[1][3])  # 60-20+1
+        self.assertIn("line 61", ch[1][3])
+
 
 
 class SearchTest(unittest.TestCase):

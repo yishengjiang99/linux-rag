@@ -58,6 +58,7 @@ async function refresh() {
   try {
     const d = await api("status");
     $("adminstate").textContent = d.admin ? "logged in as admin" : (d.admin_enabled ? "" : "admin login not configured");
+    $("admin-examples").hidden = !d.admin;
     $("files").textContent = d.files.length ? "Uploaded: " + d.files.join(", ") : "";
     setStatus(d.remaining + " questions left today");
   } catch (e) { setStatus(e.message); }
@@ -65,7 +66,9 @@ async function refresh() {
 
 $("ask").onclick = ask;
 $("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask(); });
-for (const b of $("examples").querySelectorAll("button")) b.onclick = () => { $("q").value = b.textContent; ask(); };
+for (const root of ["examples", "admin-examples"]) {
+  for (const b of $(root).querySelectorAll("button")) b.onclick = () => { $("q").value = b.textContent; ask(); };
+}
 
 $("file").onchange = async () => {
   const f = $("file").files[0];

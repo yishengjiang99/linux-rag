@@ -109,7 +109,7 @@ _DENY = re.compile(r"(?i)(\.env(\.|$)|/\.env|\.pem$|\.key$|\.crt$|\.p12$|\.pfx$|
                    r"ssh_host_|authorized_keys|known_hosts|\.netrc|/etc/ssl/|/etc/pki/|keyring|\.gnupg|opasswd|"
                    r"/environ$|/proc/(?:self|thread-self|\d+)(?:/task/\d+)?/(?:mem|environ|cmdline|auxv|pagemap|stack|syscall)$|"
                    r"/proc/(?:self|thread-self|\d+)/(?:fd|fdinfo|map_files)/|"
-                   r"^/proc/kcore$|/maps$|^/etc/ssh/|^/etc/linux-rag/)")
+                   r"^/proc/kcore$|/maps$|^/etc/ssh/|^/etc/linux-rag/|^/root(/|$))")
 
 
 def path_allowed(path):

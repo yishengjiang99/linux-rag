@@ -16,7 +16,7 @@ import subprocess
 import sys
 
 from rag import snapshot
-from rag.chunk import text_chunks
+from rag.chunk import nginx_chunks, text_chunks
 from rag.index import write_db
 from rag.redact import path_allowed, redact
 
@@ -59,7 +59,11 @@ def collect(run):
             return
         seen.add(digest)
         clean = redact(text, access_log=access)
-        for t, p, loc, body in text_chunks(clean, path, lines):
+        if "nginx" in kind and not kind.endswith("log"):
+            parts = nginx_chunks(clean, path, lines, overlap=20)
+        else:
+            parts = text_chunks(clean, path, lines, overlap=20 if "log" in kind else 0)
+        for t, p, loc, body in parts:
             chunks.append((f"{kind} {path}", p, loc, body))
 
     for kind, cmd in LIST_CMDS.items():

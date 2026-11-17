@@ -40,6 +40,15 @@
   <button type="button">How do I read /proc/pressure/memory?</button>
   <button type="button">What does vm.swappiness do?</button>
 </div>
+<div class="ex" id="admin-examples" hidden>
+  <button type="button">Why is nginx returning 502 right now?</button>
+  <button type="button">Is MySQL slow right now? Any long-running queries?</button>
+  <button type="button">What are the top 5xx paths in the last hour?</button>
+  <button type="button">Is the disk or memory close to full?</button>
+  <button type="button">Which services failed or got OOM-killed recently?</button>
+  <button type="button">When do the TLS certs expire?</button>
+  <button type="button">Any errors in the finalcut logs in the last hour?</button>
+</div>
 <button id="ask" type="button">Ask</button> <span id="status" class="muted"></span>
 <div id="answer" aria-live="polite"></div>
 <ol id="sources"></ol>
@@ -54,7 +63,7 @@
 
 <details id="admin">
   <summary>Admin</summary>
-  <p class="muted">Admins can also search this server's live, redacted nginx/systemd configs, logs and /proc (read when you ask; hourly index is the fallback).</p>
+  <p class="muted">Admins can also search this server's live, redacted nginx logs, MySQL status, health, configs and /proc (read when you ask; hourly index is the fallback).</p>
   <fieldset><input type="password" id="pw" autocomplete="current-password" placeholder="admin password">
   <button id="login" type="button">Log in</button> <button id="logout" type="button">Log out</button>
   <span id="adminstate" class="muted"></span></fieldset>

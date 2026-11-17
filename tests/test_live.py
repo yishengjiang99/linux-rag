@@ -1,4 +1,6 @@
 import os
+import re
+from pathlib import Path
 import unittest
 from unittest import mock
 
@@ -16,6 +18,7 @@ DENIED = [
     "/proc/self/maps",
     "/home/foo/.ssh/authorized_keys",
     "/etc/sudoers",
+    "/root/.bashrc",
 ]
 
 
@@ -113,6 +116,210 @@ class LiveTest(unittest.TestCase):
         live.search("zorb_live_backend 502", collect_fn=collect_fn, clock=lambda: clock["t"])
         self.assertEqual(calls["n"], 2)
         self.assertTrue(live.format_read_at(1_000.0).endswith(" PT"))
+
+    def test_single_flight_on_cache_miss(self):
+        import threading
+        started, mid, calls = threading.Event(), threading.Event(), {"n": 0}
+
+        def collect_fn():
+            calls["n"] += 1
+            started.set()
+            mid.wait(1)
+            return [("t", "/var/log/nginx/error.log", "L1-1", "singleflight zorb_live_backend")], 1_000.0
+
+        clock = lambda: 1_000.0
+        threads = [threading.Thread(target=lambda: live.search("zorb_live_backend", collect_fn=collect_fn, clock=clock))
+                   for _ in range(3)]
+        for t in threads:
+            t.start()
+        self.assertTrue(started.wait(1))
+        mid.set()
+        for t in threads:
+            t.join(2)
+        self.assertEqual(calls["n"], 1)
+
+
+ACCESS_LOG = (
+    '203.0.113.9 - - [16/Nov/2026:20:00:00 +0000] "GET /rag/api/ask HTTP/1.1" 502 157 "-" "curl/8.0"\n'
+    '198.51.100.10 - - [16/Nov/2026:20:00:01 +0000] "GET /rag/api/ask HTTP/1.1" 502 157 "-" "Mozilla/5.0"\n'
+    '198.51.100.11 - - [16/Nov/2026:20:00:02 +0000] "GET /health HTTP/1.1" 200 2 "-" "curl/8.0"\n'
+    '198.51.100.12 - - [16/Nov/2026:20:00:03 +0000] "POST /api/login HTTP/1.1" 500 12 "-" "curl/8.0"\n'
+)
+ERROR_LOG = (
+    "2026/11/16 20:00:00 [error] 1#1: connect() failed (111: Connection refused) while connecting to upstream\n"
+    "2026/11/16 20:00:01 [error] 1#1: connect() failed (111: Connection refused) while connecting to upstream\n"
+    "2026/11/16 20:00:02 [error] 1#1: upstream prematurely closed connection\n"
+)
+PROCESSLIST = (
+    "Id\tUser\tHost\tdb\tCommand\tTime\tState\tInfo\n"
+    "1\tapp\t203.0.113.9:3306\tfinalcut\tQuery\t2\tSending data\t"
+    "SELECT * FROM users WHERE email='alice@example.com' AND token='hunter2secret'\n"
+)
+MYSQL_PW = "s3cret-mysql-pw-VALUE"
+
+
+class LiveExtrasTest(unittest.TestCase):
+    def setUp(self):
+        live.clear_cache()
+
+    def test_nginx_summary_redacts_and_counts(self):
+        out = live.nginx_summary(ACCESS_LOG, ERROR_LOG)
+        self.assertIn("502=2", out)
+        self.assertIn("200=1", out)
+        self.assertIn("500=1", out)
+        self.assertIn("GET /rag/api/ask", out)
+        self.assertIn("Connection refused", out)
+        for ip in ("203.0.113.9", "198.51.100.10", "198.51.100.11"):
+            self.assertNotIn(ip, out)
+
+    def test_processlist_redacts_values_and_ips(self):
+        out = live.format_processlist(PROCESSLIST)
+        self.assertNotIn("alice@example.com", out)
+        self.assertNotIn("hunter2secret", out)
+        self.assertNotIn("203.0.113.9", out)
+        self.assertIn("SELECT", out)
+        self.assertIn("'?'", out)
+
+    def test_sql_allowlist_rejects_non_select_show(self):
+        live.allow_sql("SHOW GLOBAL STATUS")
+        live.allow_sql(live.SQL_TABLE_SIZES)
+        for sql in (
+            "INSERT INTO t VALUES (1)",
+            "UPDATE t SET x=1",
+            "DELETE FROM t",
+            "DROP DATABASE finalcut",
+            "LOAD DATA INFILE '/etc/passwd' INTO TABLE t",
+            "SELECT 1; DROP TABLE t",
+            "SELECT * FROM mysql.user",
+            "SET GLOBAL general_log=1",
+        ):
+            with self.assertRaises(ValueError) as ctx:
+                live.allow_sql(sql)
+            self.assertEqual(str(ctx.exception), "sql not allowed")
+            self.assertNotIn("passwd", str(ctx.exception))
+            self.assertNotIn("finalcut", str(ctx.exception))
+
+    def test_mysql_forbidden_env_never_opened(self):
+        opened = []
+
+        def open_env(path):
+            opened.append(path)
+            return "MYSQL_PASSWORD=" + MYSQL_PW + "\n"
+
+        for path in ("/etc/gbk-composer.env", "/etc/linux-rag/secrets"):
+            opened.clear()
+            with self.assertRaises(ValueError) as ctx:
+                live.load_mysql_creds(path, live.settings()["mysql_keys"], open_file=open_env)
+            self.assertEqual(str(ctx.exception), "mysql env file is off limits")
+            self.assertEqual(opened, [])
+            self.assertNotIn(MYSQL_PW, str(ctx.exception))
+
+        opened = []
+        real = os.open
+
+        def spy(path, *a, **k):
+            opened.append(path)
+            return real(path, *a, **k)
+
+        with mock.patch("os.open", spy):
+            for path in ("/etc/gbk-composer.env", "/etc/linux-rag/secrets"):
+                with self.assertRaises(ValueError):
+                    live.load_mysql_creds(path, live.settings()["mysql_keys"])
+        self.assertEqual(opened, [])
+
+    def test_mysql_chunks_and_errors_never_include_secrets(self):
+        cfg = live.settings()
+        creds = {"host": "127.0.0.1", "user": "app", "password": MYSQL_PW, "database": "finalcut"}
+
+        def run_sql(sql):
+            live.allow_sql(sql)
+            if sql == "SHOW GLOBAL STATUS":
+                return "Uptime\t100\nQuestions\t500\nSlow_queries\t3\nThreads_connected\t4\n"
+            if sql == "SHOW PROCESSLIST":
+                return PROCESSLIST
+            if sql == "SHOW ENGINE INNODB STATUS":
+                return "====\nTRANSACTIONS\nSELECT x FROM t WHERE pw='" + MYSQL_PW + "'\n"
+            if sql == live.SQL_TABLE_SIZES:
+                return "table_schema\ttable_name\nfinalcut\tusers\n"
+            return ""
+
+        chunks = live.collect_mysql(cfg, run_sql=run_sql, creds=creds)
+        text = "\n".join(c[2] for c in chunks)
+        self.assertIn("Slow_queries", text)
+        self.assertIn("Approx_QPS", text)
+        self.assertNotIn(MYSQL_PW, text)
+        self.assertNotIn("alice@example.com", text)
+        self.assertNotIn("203.0.113.9", text)
+        self.assertNotIn("hunter2secret", text)
+
+        def bad_sql(sql):
+            raise ValueError("access denied for '" + MYSQL_PW + "' at 203.0.113.9")
+
+        chunks = live.collect_mysql(cfg, run_sql=bad_sql, creds=creds)
+        self.assertEqual(chunks, [])
+
+    def test_auth_summary_has_counts_not_identities(self):
+        raw = ("sshd: Accepted publickey for alice from 203.0.113.9 port 22\n"
+               "sshd: Failed password for bob from 198.51.100.10 port 22\n"
+               "sshd: Invalid user eve from 198.51.100.11\n")
+        out = live.auth_summary(raw)
+        self.assertIn("accepted logins: 1", out)
+        self.assertIn("failed logins: 1", out)
+        self.assertIn("invalid user attempts: 1", out)
+        for s in ("alice", "bob", "eve", "203.0.113.9", "198.51.100.10"):
+            self.assertNotIn(s, out)
+
+    def test_configured_denylist_paths_not_opened(self):
+        opened = []
+
+        def open_file(path, max_bytes, tail):
+            opened.append(path)
+            if path.endswith("access.log"):
+                return ACCESS_LOG
+            if path.endswith("error.log"):
+                return ERROR_LOG
+            return ""
+
+        cfg = live.settings({"RAG_LOG_PATHS": "/etc/gbk-composer.env,/etc/linux-rag/secrets,/var/log/nginx/access.log",
+                             "RAG_NGINX_ACCESS_LOG": "/var/log/nginx/access.log",
+                             "RAG_NGINX_ERROR_LOG": "/var/log/nginx/error.log",
+                             "RAG_AUTH_LOG": "/etc/linux-rag/secrets",
+                             "RAG_MYSQL_ENV_FILE": "/etc/gbk-composer.env",
+                             "RAG_JOURNAL_UNITS": ""})
+        chunks, _ = live.collect(
+            open_file=open_file, run_cmd=lambda cmd: "", paths=None, commands=[],
+            include_snapshot=False, include_extras=True, cfg=cfg,
+            mysql_creds={"host": "", "user": "", "password": MYSQL_PW, "database": ""},
+            run_sql=lambda sql: "",
+        )
+        self.assertNotIn("/etc/gbk-composer.env", opened)
+        self.assertNotIn("/etc/linux-rag/secrets", opened)
+        text = "\n".join(c[3] for c in chunks)
+        self.assertNotIn(MYSQL_PW, text)
+
+    def test_sample_env_has_no_secret_looking_values(self):
+        root = Path(__file__).resolve().parent.parent
+        text = (root / "sample.env").read_text()
+        self.assertNotIn("/etc/gbk-composer.env", text)
+        self.assertNotIn("/etc/linux-rag/secrets", text)
+        self.assertNotIn("/home/finalcut", text)
+        secret_val = re.compile(
+            r"(?i)(sk[_-]live|sk[_-]test|xai-|ghp_|github_pat_|AKIA|whsec_|-----BEGIN|"
+            r"eyJ[A-Za-z0-9_-]{8,}\.)"
+        )
+        for i, line in enumerate(text.splitlines(), 1):
+            s = line.strip()
+            self.assertIsNone(secret_val.search(s), f"line {i}: {s}")
+            if not s or s.startswith("#"):
+                if "MYSQL_ENV_FILE" in s:
+                    self.assertIn("/path/to/", s)
+                continue
+            k, _, v = s.partition("=")
+            v = v.strip().strip("'\"")
+            self.assertFalse(secret_val.search(v), f"{k}={v}")
+            if "PASSWORD" in k:
+                self.assertEqual(v, "MYSQL_PASSWORD")
+            self.assertNotRegex(v, r"^[A-Za-z0-9+/=_-]{24,}$")
 
 
 if __name__ == "__main__":

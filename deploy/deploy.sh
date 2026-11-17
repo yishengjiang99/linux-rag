@@ -40,6 +40,10 @@ grep -q '^XAI_API_KEY=' /etc/linux-rag/secrets || { echo "XAI_API_KEY missing in
 cd /opt/linux-rag
 # public indexes (kernel + man-pages clones live in /var/lib/linux-rag/corpora)
 runuser -u linux-rag -- env PYTHONDONTWRITEBYTECODE=1 scripts/build_index.sh /var/lib/linux-rag/corpora /var/lib/linux-rag
+if [ ! -f /etc/linux-rag/live.env ]; then
+  install -m 644 -o root -g root sample.env /etc/linux-rag/live.env
+  echo "created /etc/linux-rag/live.env from sample.env"
+fi
 cp deploy/linux-rag.service deploy/linux-rag-live.service deploy/linux-rag-collect.service deploy/linux-rag-collect.timer /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable --now linux-rag-live.service   # root helper: redacted live reads at ask time
